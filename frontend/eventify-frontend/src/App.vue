@@ -14,14 +14,14 @@ import { RouterView } from 'vue-router'
 
 <style scoped>
 main {
-  padding-top: 4em; /* Adjust this value based on the height of your nav bar */
+  padding-top: 4em;
   display: flex;
-  justify-content: center; /* Center the main content */
-  align-items: center;
+  /*justify-content: center;
+  align-items: center;*/
   flex-direction: column;
-  min-height: 100vh; /* Ensure the main content takes up the full height of the viewport */
-  max-width: 1200px; /* Set a maximum width for the main content */
-  width: 100%; /* Ensure the main content takes up the full width */
-  margin: 0 auto; /* Center the main content horizontally */
+  min-height: 100vh;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
 }
 </style>

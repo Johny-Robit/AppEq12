@@ -13,19 +13,39 @@
       <button type="submit">Login</button>
     </form>
     <p>Don't have an account? <RouterLink to="/signup">Sign up here</RouterLink></p>
+    <form @submit.prevent="temporaryLogin" v-if="!isLoggedIn">
+      <button type="submit">Temporary Login</button>
+    </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter, useRoute } from 'vue-router'
+import { isLoggedIn, user } from '../auth.js'
 
 const email = ref('')
 const password = ref('')
 
+const router = useRouter()
+const route = useRoute()
+
 const login = () => {
-  // Handle login logic here
-  console.log('Logging in with', email.value, password.value)
+  if (email.value === user.value.email && password.value === user.value.password) {
+    console.log('Logging in with', email.value, password.value)
+    isLoggedIn.value = true
+    const redirectTo = route.query.redirect || '/'
+    router.push(redirectTo)
+  } else {
+    console.log('Invalid email or password')
+  }
+}
+
+const temporaryLogin = () => {
+  isLoggedIn.value = true
+  console.log('Logged in:', isLoggedIn.value)
+  const redirectTo = route.query.redirect || '/'
+  router.push(redirectTo)
 }
 </script>
 
@@ -34,8 +54,8 @@ const login = () => {
   border: 1px solid #ccc;
   padding: 2em;
   border-radius: 8px;
-  background-color: #343a40; /* Same color as the navbar */
-  color: white; /* White text color */
+  background-color: #343a40;
+  color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   width: 100%;

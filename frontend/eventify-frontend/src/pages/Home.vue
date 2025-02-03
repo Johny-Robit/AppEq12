@@ -2,10 +2,14 @@
   <div>
     <h1>Welcome to Eventify</h1>
     <p>This is the home page.</p>
+    <p v-if="isLoggedIn">You are logged in!</p>
   </div>
 </template>
 
 <script setup>
+import { isLoggedIn } from '../auth.js'
+
+console.log('isLoggedIn:', isLoggedIn.value)
 </script>
 
 <style scoped>
