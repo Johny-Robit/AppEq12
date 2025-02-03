@@ -1,9 +1,0 @@
-# le fichier .env devrait être placé dans le dossier : "...\GLO3202_AppWeb_eq12\backend\.env"
-
-DJANGO_SECRET_KEY='@h$1+$a@^u=523(f%y$0&-hj*svbo2(0n_qo_!mo95od#yck)c'
-DB_NAME=eventify_db
-DB_USER=root
-DB_PASSWORD=Groot123
-DB_HOST=localhost
-DB_PORT=3306
-
