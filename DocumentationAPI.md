@@ -1,5 +1,34 @@
 # Documentation de l'API
 
+# Appels API
+
+## User
+- **Signup** (POST) (Public)
+- **Login** (Public)
+- **Logout**
+- **EditProfile** (PUT)
+- **GetProfileInfo** (GET)
+- **GetJoinedEventsList** (GET)  
+  - // avoir la liste des évènements auxquels l’utilisateur a été invité
+- **GetEventInvitesList** (GET)
+- **GetCreatedEventsList** (GET)  
+  - // avoir la liste des évènements que l’utilisateur a créés
+
+## Event
+- **JoinEvent** (PUT)
+- **LeaveEvent** (PUT)
+- **InviteToEvent** (PUT)
+- **RemoveAttendee** (PUT) [Autorisation]
+- **CreateEvent** (POST)
+- **EditEvent** (PUT) [Autorisation]
+- **DeleteEvent** (DELETE) [Autorisation]
+- **GetEventInformations** (GET) (Public)
+- **GetAttendeesList** (GET)  
+  - // avoir la liste des personnes qui ont confirmé leur présence
+- **GetPendingInvites** (GET)  
+  - // avoir la liste des personnes qui doivent encore confirmer leur présence
+
+
 ## User API
 
 ### Signup (POST) (Public)
