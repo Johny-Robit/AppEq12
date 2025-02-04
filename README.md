@@ -1,5 +1,3 @@
-# GLO3202_AppWeb_eq12
-
 # Documentation de l'API
 
 ## User API
@@ -82,11 +80,9 @@ Authorization: Bearer <access_token>
 
 - **401 Unauthorized** (Si token invalide)
 
-## Event API
+### Edit Profile (PUT) (Authenticated)
 
-### Create Event (POST) (Authenticated)
-
-**Endpoint:** `/api/event/create/`
+**Endpoint:** `/api/user/profile/edit/`
 
 **Headers:**
 ```
@@ -96,36 +92,159 @@ Authorization: Bearer <access_token>
 **Body:**
 ```json
 {
+  "description": "string",
+  "profile_image_link": "string"
+}
+```
+
+**Response:**
+
+- **200 OK**
+  ```json
+  {
+    "message": "Profile updated successfully"
+  }
+  ```
+
+- **400 Bad Request** (Si problème de validation)
+
+### Get Profile Info (GET) (Authenticated)
+
+**Endpoint:** `/api/user/profile/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+
+- **200 OK**
+  ```json
+  {
+    "username": "string",
+    "description": "string",
+    "profile_image_link": "string"
+  }
+  ```
+
+- **404 Not Found** (Si utilisateur non trouvé)
+
+### Get Joined Events List (GET) (Authenticated)
+
+**Endpoint:** `/api/user/events/joined/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+```json
+[
+  {
+    "event_id": "integer",
+    "event_name": "string",
+    "event_address": "string",
+    "start_datetime": "string",
+    "end_datetime": "string",
+    "Owner_id": "integer"
+  }
+]
+```
+
+### Get Event Invites List (GET) (Authenticated)
+
+**Endpoint:** `/api/user/events/invites/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+```json
+[
+  {
+    "event_id": "integer",
+    "event_name": "string",
+    "event_address": "string",
+    "start_datetime": "string",
+    "end_datetime": "string",
+    "Owner_id": "integer"
+  }
+]
+```
+
+### Get Created Events List (GET) (Authenticated)
+
+**Endpoint:** `/api/user/events/created/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+```json
+[
+  {
+    "event_id": "integer",
+    "event_name": "string",
+    "event_address": "string",
+    "start_datetime": "string",
+    "end_datetime": "string",
+    "Owner_id": "integer"
+  }
+]
+```
+
+## Event API
+
+### Invite to Event (PUT) (Authenticated, Owner Only)
+
+**Endpoint:** `/api/event/invite/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Body:**
+```json
+{
+  "event_id": "integer",
+  "user_id": "integer"
+}
+```
+
+
+
+### Edit Event (PUT) (Authenticated, Owner Only)
+
+**Endpoint:** `/api/event/edit/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Body:**
+```json
+{
+  "event_id": "integer",
   "event_name": "string",
   "event_address": "string",
   "start_datetime": "string",
   "end_datetime": "string",
   "description": "string",
-  "is_public": "boolean",
-  "event_image_link": "string"
+  "is_public": "boolean"
 }
 ```
 
-**Response:**
+### Delete Event (DELETE) (Authenticated, Owner Only)
 
-- **201 Created**
-  ```json
-  {
-    "message": "Event created successfully",
-    "event_id": "integer"
-  }
-  ```
-
-- **400 Bad Request** (Si données invalides)
-  ```json
-  {
-    "error": "Invalid input data"
-  }
-  ```
-
-### Join Event (PUT) (Authenticated)
-
-**Endpoint:** `/api/event/join/`
+**Endpoint:** `/api/event/delete/`
 
 **Headers:**
 ```
@@ -139,84 +258,39 @@ Authorization: Bearer <access_token>
 }
 ```
 
-**Response:**
+### Get Attendees List (GET) (Authenticated)
 
-- **200 OK**
-  ```json
-  {
-    "message": "Joined event successfully"
-  }
-  ```
-
-- **404 Not Found** (Si l'événement n'existe pas)
-  ```json
-  {
-    "error": "Event not found"
-  }
-  ```
-
-- **400 Bad Request** (Si l'utilisateur est déjà inscrit)
-  ```json
-  {
-    "error": "User already joined the event"
-  }
-  ```
-
-### Leave Event (PUT) (Authenticated)
-
-**Endpoint:** `/api/event/leave/`
+**Endpoint:** `/api/event/{event_id}/attendees/`
 
 **Headers:**
 ```
 Authorization: Bearer <access_token>
 ```
 
-**Body:**
+**Response:**
 ```json
-{
-  "event_id": "integer"
-}
+[
+  {
+    "user_id": "integer"
+  }
+]
+```
+
+### Get Pending Invites (GET) (Authenticated, Owner Only)
+
+**Endpoint:** `/api/event/{event_id}/pending_invites/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
 ```
 
 **Response:**
-
-- **200 OK**
-  ```json
+```json
+[
   {
-    "message": "Left event successfully"
+    "user_id": "integer"
   }
-  ```
-
-- **400 Bad Request** (Si l'utilisateur n'est pas inscrit à l'événement)
-  ```json
-  {
-    "error": "User is not part of the event"
-  }
-  ```
-
-### Get Event Information (GET) (Public)
-
-**Endpoint:** `/api/event/{event_id}/`
-
-**Response:**
-
-- **200 OK**
-  ```json
-  {
-    "ownerID": "integer",
-    "event_name": "string",
-    "event_address": "string",
-    "start_datetime": "string",
-    "end_datetime": "string",
-    "description": "string",
-    "is_public": "boolean"
-  }
-  ```
-
-- **404 Not Found** (Si l'événement n'existe pas)
-  ```json
-  {
-    "error": "Event not found"
-  }
-  ```
+]
+```
 
