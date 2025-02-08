@@ -6,6 +6,7 @@
 - **Signup** (POST) (Public)
 - **Login** (Public)
 - **Logout**
+- **IsAuthenticated**
 - **EditProfile** (PUT)
 - **GetProfileInfo** (GET)
 - **GetJoinedEventsList** (GET)  

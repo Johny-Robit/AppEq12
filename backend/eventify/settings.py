@@ -24,7 +24,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-977twumu=p=jpaav(ie1*)&x04b9k3y=+^1f5)xg&ce7i5c(n^'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# TODO SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -47,10 +47,10 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 ROOT_URLCONF = 'eventify.urls'
@@ -89,7 +89,7 @@ DATABASES = {
 }
 
 
-# Password validation
+# AUTHENTICATION & AUTORISATION
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -106,6 +106,15 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Paramétrage des cookies de session
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_NAME = "sessionid"  # Nom du cookie de session
+SESSION_COOKIE_AGE = 1209600  # 2 semaines de durée de vie
+SESSION_COOKIE_SECURE = not(DEBUG) # Mettre à True en production si HTTPS est activé
+SESSION_COOKIE_HTTPONLY = True  # Empêche JavaScript d'accéder au cookie (meilleure sécurité)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # La session persiste même après la fermeture du navigateur
+# Paramétrage CSRF pour les cookies ?
 
 
 # Internationalization
