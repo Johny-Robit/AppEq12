@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-977twumu=p=jpaav(ie1*)&x04b9k3y=+^1f5)xg&ce7i5c(n^
 # TODO SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# TODO inscrire notre domaine une fois le déploiement sur Heroku
+ALLOWED_HOSTS = ["*"] if DEBUG else ["yourdomain.com"]
 
 
 # Application definition
@@ -109,9 +110,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Paramétrage des cookies de session
 SESSION_ENGINE = "django.contrib.sessions.backends.db"
+SESSION_COOKIE_SAMESITE = "Lax"  # Permet d'envoyer le cookie de session entre le backend et le frontend
 SESSION_COOKIE_NAME = "sessionid"  # Nom du cookie de session
 SESSION_COOKIE_AGE = 1209600  # 2 semaines de durée de vie
-SESSION_COOKIE_SECURE = not(DEBUG) # Mettre à True en production si HTTPS est activé
+SESSION_COOKIE_SECURE = not DEBUG  # Mettre à True en production avec HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Empêche JavaScript d'accéder au cookie (meilleure sécurité)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # La session persiste même après la fermeture du navigateur
 # Paramétrage CSRF pour les cookies ?

@@ -34,12 +34,16 @@ class UserLogin(APIView):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return Response({"success": "Logged in successfully"}, status=status.HTTP_200_OK)
+                response = Response({"success": "Logged in successfully"}, status=status.HTTP_200_OK)
+                # Envoyer le cookie de session
+                response.set_cookie(key="sessionid", value=request.session.session_key, httponly=True)
+                return response
             else:
                 return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
 
         except json.JSONDecodeError:
             return Response({"error": "Invalid JSON format"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UserLogout(APIView):
@@ -52,8 +56,8 @@ class UserLogout(APIView):
 
 
 class UserIsAuthenticated(APIView):
-    permission_classes = [IsAuthenticated]
-
     def get(self, request):
         """ Vérifie si l'utilisateur est connecté. """
-        return Response({"authenticated": True, "user": request.user.username}, status=200)
+        if request.user.is_authenticated:
+            return Response({"authenticated": True, "user": request.user.username}, status=200)
+        return Response({"authenticated": False}, status=200)
