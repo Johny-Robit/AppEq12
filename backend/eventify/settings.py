@@ -143,3 +143,44 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Pour pytest-django
 pytest_plugins = ["django.contrib.auth"]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        # DEBUG :
+        # TODO For production, use RotatingFileHandler to limit file size
+        # from logging.handlers import RotatingFileHandler
+        # 'level': 'ERROR',
+        # 'class': 'logging.handlers.RotatingFileHandler',
+        # 'filename': os.path.join(BASE_DIR, 'authentication.log'),
+        # 'maxBytes': 1024 * 1024 * 5,  # 5 MB
+        # 'backupCount': 3,  # Keep 3 backups
+        # 'formatter': 'verbose',
+
+        'eventify_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs', 'eventify.log'),
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'eventify': {
+            'handlers': ['eventify_file'],
+            # DEBUG set level to 'ERROR' in production
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

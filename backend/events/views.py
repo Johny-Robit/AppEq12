@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
@@ -11,14 +12,22 @@ class UserSignup(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-        """ Crée un nouvel utilisateur """
+        """Creates a new user"""
         serializer = UserSignupSerializer(data=request.data)
-        
+
         if serializer.is_valid():
-            serializer.save()
-            return Response({"success": "User created successfully"}, status=status.HTTP_201_CREATED)
-        
-        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            user = serializer.save()
+            return Response({"success": "User created successfully", "userid": user.id}, status=status.HTTP_201_CREATED)
+
+        error_messages = serializer.errors
+
+        if "username" in error_messages or "email" in error_messages:
+            return Response({"error": "Email or username already taken"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if "password" in error_messages:
+            return Response({"error": "Invalid password format"}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({"error": "Bad request."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLogin(APIView):
