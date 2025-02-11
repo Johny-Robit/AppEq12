@@ -79,9 +79,16 @@
 - **200 OK**
   ```json
   {
-    "token": "string"
+    "message": "Login successful"
   }
   ```
+- **Notes:**
+  - Le serveur renvoie un cookie sessionid dans l'en-tête Set-Cookie.
+  - Le cookie est HttpOnly, donc inaccessible en JavaScript (localStorage, sessionStorage).
+  - Le client (navigateur, Postman, etc.) stocke le cookie automatiquement.
+  - Toutes les requêtes suivantes incluront automatiquement ce cookie sans action du client.
+  - Aucune information de session (sessionid) n'est retournée dans le body.
+
 
 - **401 Unauthorized** (Si identifiants incorrects)
   ```json
@@ -94,10 +101,9 @@
 
 **Endpoint:** `/api/user/logout/`
 
-**Headers:**
-```
-Authorization: Bearer <access_token>
-```
+**Headers:** *(Les cookies sont envoyés automatiquement par le navigateur)*
+
+Cookie: sessionid=<session_id>
 
 **Response:**
 
@@ -116,7 +122,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -144,7 +150,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Response:**
@@ -166,7 +172,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Response:**
@@ -189,7 +195,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Response:**
@@ -212,7 +218,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Response:**
@@ -237,7 +243,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -276,7 +282,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -308,7 +314,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -325,7 +331,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -342,7 +348,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -381,7 +387,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -403,7 +409,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Body:**
@@ -445,7 +451,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Response:**
@@ -463,7 +469,7 @@ Authorization: Bearer <access_token>
 
 **Headers:**
 ```
-Authorization: Bearer <access_token>
+Cookie: sessionid=<session_id>
 ```
 
 **Response:**

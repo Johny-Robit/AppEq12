@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    #'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 ROOT_URLCONF = 'eventify.urls'
@@ -117,6 +117,10 @@ SESSION_COOKIE_SECURE = not DEBUG  # Mettre à True en production avec HTTPS
 SESSION_COOKIE_HTTPONLY = True  # Empêche JavaScript d'accéder au cookie (meilleure sécurité)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # La session persiste même après la fermeture du navigateur
 # Paramétrage CSRF pour les cookies ?
+CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000", "http://localhost:5173"]  # Ajoute l'URL du frontend Vue
+CSRF_COOKIE_NAME = "csrftoken"  # Nom du cookie CSRF
+CSRF_COOKIE_HTTPONLY = False  # Permet à Vue.js de lire le cookie CSRF
+CSRF_COOKIE_SECURE = False  # TODO Doit être à True en production avec HTTPS
 
 
 # Internationalization

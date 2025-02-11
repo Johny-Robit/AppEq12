@@ -1,17 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
-from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
-from .serializers import UserSerializer, UserSignupSerializer, UserLoginSerializer
-from rest_framework import status
-import json
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth import login
-from .serializers import UserLoginSerializer
+from .serializers import UserSerializer, UserSignupSerializer, UserLoginSerializer
+
+
+def get_csrf_token(request):
+    return JsonResponse({"csrfToken": get_token(request)})
 
 class UserSignup(APIView):
     permission_classes = [AllowAny]
