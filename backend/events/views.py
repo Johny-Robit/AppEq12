@@ -1,14 +1,16 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-from django.middleware.csrf import get_token
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserSerializer, UserSignupSerializer, UserLoginSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 
+from .serializers import UserLoginSerializer, UserSignupSerializer
+import logging
+
+
+
+logger = logging.getLogger("eventify")
 
 class UserSignup(APIView):
     permission_classes = [AllowAny]
@@ -41,33 +43,37 @@ class UserLogin(APIView):
 
         if serializer.is_valid():
             user = serializer.validated_data["user"]
-            login(request, user)  # Connecte l'utilisateur
-            
-            # Création de la réponse
-            response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
 
-            # Django gère automatiquement la session et le cookie.
-            # Le cookie est ajouté automatiqument à la réponse HTTP.
+            # Générer les tokens JWT
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
 
-            return response
+            return Response({
+                "access": access_token,
+                "refresh": str(refresh)
+            }, status=status.HTTP_200_OK)
         
-        # Filtrage des erreurs pour éviter de donner des infos sensibles
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        """ Déconnecte l'utilisateur. """
-        logout(request)
-        return Response({"success": "Logged out successfully"}, status=status.HTTP_200_OK)
+        """ Déconnecte l'utilisateur en blacklistant le refresh token. """
+        try: 
+            refresh_token = request.data.get("refresh")
+            if not refresh_token:
+                logger.error(f"UserLogout failed in UserLogout View: request.data.get('refresh') failed to fetch token")
+                return Response({"error": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+            token = RefreshToken(refresh_token)
+            token.blacklist()        
+
+            return Response({"success": "Logged out successfully"}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"UserLogout failed in UserLogout View: {e}")
+            return Response({"error": "Invalid Token"}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UserIsAuthenticated(APIView):
-    def get(self, request):
-        """ Vérifie si l'utilisateur est connecté. """
-        if request.user.is_authenticated:
-            return Response({"authenticated": True, "user": request.user.username}, status=200)
-        return Response({"authenticated": False}, status=200)

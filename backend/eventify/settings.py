@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,16 +42,54 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Packages utiles
+    'corsheaders', #allows requests from same host/different port on development mode. #TODO remove this in production
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+
+    # Application Django
     'events'
 ]
 
+# for django authentication with JWT
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+# for django authentication with JWT
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware', #TODO remove this in production, allows requests from same host/different port on development mode
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+# S'assurer de fermer toutes les origines
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = False
+# Puis ouvrir celles qui sont utiles
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:5173',
+    'http://localhost:8000',
 ]
 
 ROOT_URLCONF = 'eventify.urls'
@@ -106,16 +145,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-# Paramétrage des cookies de session
-SESSION_ENGINE = "django.contrib.sessions.backends.db"
-SESSION_COOKIE_SAMESITE = "Lax"  # Permet d'envoyer le cookie de session entre le backend et le frontend
-SESSION_COOKIE_NAME = "sessionid"  # Nom du cookie de session
-SESSION_COOKIE_AGE = 1209600  # 2 semaines de durée de vie
-SESSION_COOKIE_SECURE = not DEBUG  # Mettre à True en production avec HTTPS
-SESSION_COOKIE_HTTPONLY = True  # Empêche JavaScript d'accéder au cookie (meilleure sécurité)
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # La session persiste même après la fermeture du navigateur
-
 
 
 # Internationalization

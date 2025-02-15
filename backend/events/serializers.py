@@ -37,14 +37,7 @@ class UserLoginSerializer(serializers.Serializer):
         email = data["email"]
         password = data["password"]
 
-        # Recherche l'utilisateur par email
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise serializers.ValidationError("Invalid credentials.")
-
-        # Authentification avec le username associé à l'email
-        user = authenticate(username=user.username, password=password)
+        user = authenticate(username=email, password=password)
 
         if not user:
             raise serializers.ValidationError("Invalid credentials.")
@@ -53,9 +46,5 @@ class UserLoginSerializer(serializers.Serializer):
         data["user"] = user
         return data
 
-class UserSerializer(serializers.ModelSerializer):
-    """Sérialiseur pour afficher les infos utilisateurs"""
-    class Meta:
-        model = User
-        fields = ["id", "username", "email"]
+
 
