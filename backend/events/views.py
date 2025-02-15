@@ -10,9 +10,6 @@ from rest_framework.views import APIView
 from .serializers import UserSerializer, UserSignupSerializer, UserLoginSerializer
 
 
-def get_csrf_token(request):
-    return JsonResponse({"csrfToken": get_token(request)})
-
 class UserSignup(APIView):
     permission_classes = [AllowAny]
 
@@ -49,12 +46,8 @@ class UserLogin(APIView):
             # Création de la réponse
             response = Response({"message": "Login successful"}, status=status.HTTP_200_OK)
 
-            # Ajout du cookie de session
-            response.set_cookie(
-                key="sessionid",
-                value=request.session.session_key,
-                httponly=True
-            )
+            # Django gère automatiquement la session et le cookie.
+            # Le cookie est ajouté automatiqument à la réponse HTTP.
 
             return response
         
