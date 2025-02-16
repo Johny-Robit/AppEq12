@@ -1,0 +1,1 @@
+ERROR 2025-02-09 21:53:31,969 serializers Validation Error: <class 'rest_framework.exceptions.ValidationError'>
