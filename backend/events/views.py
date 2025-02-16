@@ -2,8 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from .models import AccessToken
 
 from .serializers import UserLoginSerializer, UserSignupSerializer
 import logging
@@ -44,12 +43,14 @@ class UserLogin(APIView):
         if serializer.is_valid():
             user = serializer.validated_data["user"]
 
-            # Générer les tokens JWT
-            refresh = RefreshToken.for_user(user)
-            access_token = str(refresh.access_token)
+            # Supprimer l'ancien token (si existant)
+            AccessToken.objects.filter(user=user).delete()
+
+            # Générer un nouveau token
+            access_token = AccessToken.objects.create(user=user)
 
             return Response({
-                "token": access_token
+                "token": str(access_token.token)
             }, status=status.HTTP_200_OK)
         
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
@@ -61,18 +62,22 @@ class UserLogout(APIView):
     def post(self, request):
         """ Déconnecte l'utilisateur en blacklistant le refresh token. """
         try: 
-            refresh_token = request.data.get("refresh")
-            if not refresh_token:
+            token = request.headers.get("Authorization")
+            if not token:
                 logger.error(f"UserLogout failed in UserLogout View: request.data.get('refresh') failed to fetch token")
-                return Response({"error": "No refresh token provided"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"error": "No access token provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-            token = RefreshToken(refresh_token)
-            token.blacklist()        
+            token = token.replace("Bearer ", "")
+            delete_count, _ = AccessToken.objects.filter(token=token).delete()      
+
+            if delete_count == 0:
+                logger.warning(f"Invalid or expired token provided in logout UserLogout view.")
+                return Response({"error": "Invalid or expired token"}, status=status.HTTP_400_BAD_REQUEST)
 
             return Response({"success": "Logged out successfully"}, status=status.HTTP_200_OK)
 
         except Exception as e:
             logger.error(f"UserLogout failed in UserLogout View: {e}")
-            return Response({"error": "Invalid Token"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Unexpected error logging out."}, status=status.HTTP_400_BAD_REQUEST)
 
 
