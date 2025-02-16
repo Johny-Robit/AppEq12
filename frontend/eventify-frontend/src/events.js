@@ -9,7 +9,7 @@ export const events = ref([
     endTime: '2023-12-01 22:00',
     attendees: 150,
     description: 'Join us for an evening of live music and entertainment.',
-    createdBy: 'Jane Doe',
+    createdBy: 'JaneDoe32',
   },
   {
     id: 2,
@@ -19,7 +19,7 @@ export const events = ref([
     endTime: '2023-12-05 20:00',
     attendees: 200,
     description: 'Explore the latest art pieces from local artists.',
-    createdBy: 'John Smith',
+    createdBy: 'JohnSmith69',
   },
   {
     id: 3,
@@ -29,7 +29,7 @@ export const events = ref([
     endTime: '2023-12-10 17:00',
     attendees: 300,
     description: 'A conference discussing the latest trends in technology.',
-    createdBy: 'John Smith',
+    createdBy: 'JohnSmith69',
   },
 ])
 

@@ -11,24 +11,33 @@
       <RouterLink to="/my-events">My Events</RouterLink>
       <div class="separator"></div>
       <RouterLink v-if="!isLoggedIn && !isAuthPage" to="/login">Login</RouterLink>
-      <button v-if="isLoggedIn" @click="logout">Logout</button>
+      <div v-if="isLoggedIn" class="avatar-container" @click="toggleDropdown">
+        <img src="../assets/Default_Avatar_Icon.jpg" alt="Avatar" class="avatar" />
+        <div v-if="dropdownVisible" class="dropdown-menu">
+          <RouterLink to="/profile">Profile</RouterLink>
+          <button @click="logout">Logout</button>
+        </div>
+      </div>
     </div>
   </nav>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { isLoggedIn } from '../auth.js'
 
 const route = useRoute()
 const router = useRouter()
 const isAuthPage = route.path === '/login' || route.path === '/signup'
+const dropdownVisible = ref(false)
 
-console.log('NavBar isLoggedIn:', isLoggedIn.value)
+const toggleDropdown = () => {
+  dropdownVisible.value = !dropdownVisible.value
+}
 
 const logout = () => {
   isLoggedIn.value = false
-  console.log('Logged out:', isLoggedIn.value)
   router.push('/')
 }
 </script>
@@ -103,15 +112,41 @@ nav a:hover {
   background-color: #369f6b;
 }
 
-button {
-  background: none;
-  border: none;
-  color: white;
+.avatar-container {
+  position: relative;
   cursor: pointer;
-  font-size: 1em;
 }
 
-button:hover {
-  text-decoration: underline;
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background-color: #343a40;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-menu a,
+.dropdown-menu button {
+  padding: 0.5em 1em;
+  color: white;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+  background-color: #369f6b;
 }
 </style>

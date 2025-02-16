@@ -3,7 +3,7 @@
     <h1>Signup</h1>
     <form @submit.prevent="signup">
       <div class="form-group">
-        <label for="name">Name:</label>
+        <label for="name">Username:</label>
         <input type="text" v-model="name" required />
       </div>
       <div class="form-group">
@@ -20,7 +20,7 @@
       </div>
       <button type="submit">Signup</button>
     </form>
-    <RouterLink to="/login" class="back-to-login">Go back to login</RouterLink>
+    <p>Already have an account? <RouterLink to="/login">Login here</RouterLink></p>
   </div>
 </template>
 

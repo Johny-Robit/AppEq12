@@ -6,6 +6,8 @@ import Events from '../pages/Events.vue'
 import MyEvents from '../pages/MyEvents.vue'
 import CreateEvent from '../pages/CreateEvent.vue'
 import EditEvent from '../pages/EditEvent.vue'
+import Profile from '../pages/Profile.vue'
+import EditProfile from '../pages/EditProfile.vue'
 import { isLoggedIn } from '../auth.js'
 
 const routes = [
@@ -31,6 +33,18 @@ const routes = [
   {
     path: '/edit-event/:id',
     component: EditEvent,
+    beforeEnter: (to, from, next) => {
+      if (!isLoggedIn.value) {
+        next({ path: '/login', query: { redirect: to.fullPath } })
+      } else {
+        next()
+      }
+    },
+  },
+  { path: '/profile', component: Profile },
+  {
+    path: '/edit-profile',
+    component: EditProfile,
     beforeEnter: (to, from, next) => {
       if (!isLoggedIn.value) {
         next({ path: '/login', query: { redirect: to.fullPath } })

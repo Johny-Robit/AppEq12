@@ -1,7 +1,13 @@
 <template>
   <div>
     <h1>Events</h1>
-    <input v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..." />
+    <div class="search-container">
+      <input v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..." />
+      <button v-if="searchQuery" @click="clearSearch" class="clear-button">X</button>
+      <button @click="performSearch" class="button">
+        Search
+      </button>
+    </div>
     <p>Here are some upcoming events.</p>
     <div v-for="event in filteredEvents" :key="event.id" class="event">
       <h2>{{ event.name }}</h2>
@@ -29,11 +35,18 @@ const router = useRouter()
 const route = useRoute()
 
 const filteredEvents = computed(() => {
-  return events.value.filter(event => event.name.toLowerCase().includes(searchTrigger.value.toLowerCase()))
+  return events.value.filter(event => 
+    !event.isPrivate && event.name.toLowerCase().includes(searchTrigger.value.toLowerCase())
+  )
 })
 
 const performSearch = () => {
   searchTrigger.value = searchQuery.value
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  searchTrigger.value = ''
 }
 
 const joinEvent = (eventId) => {
@@ -76,8 +89,21 @@ h1 {
   color: #42b983;
 }
 
-input {
+.search-container {
+  display: flex;
+  align-items: center;
   margin-bottom: 1em;
+}
+
+.clear-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5em;
+  color: #646464;
+}
+
+input {
   padding: 0.5em;
   width: 100%;
   box-sizing: border-box;
@@ -96,6 +122,7 @@ button {
   padding: 0.5em 1em;
   cursor: pointer;
   margin-right: 0.5em;
+  margin-left: 0.5em;
 }
 
 button:hover {

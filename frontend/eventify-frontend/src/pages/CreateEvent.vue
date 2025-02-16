@@ -22,6 +22,10 @@
         <label for="description">Description:</label>
         <textarea v-model="description" required></textarea>
       </div>
+      <div class="form-group">
+        <label for="isPrivate">Private Event:</label>
+        <input type="checkbox" v-model="isPrivate" />
+      </div>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <button type="submit">Create Event</button>
     </form>
@@ -39,6 +43,7 @@ const address = ref('')
 const dateTime = ref('')
 const endTime = ref('')
 const description = ref('')
+const isPrivate = ref(false)
 const errorMessage = ref('')
 
 const router = useRouter()
@@ -65,6 +70,7 @@ const createEvent = () => {
     attendees: 0,
     description: description.value,
     createdBy: user.value.name,
+    isPrivate: isPrivate.value,
   }
   events.value.push(newEvent)
   console.log('Event created:', newEvent)
