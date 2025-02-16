@@ -37,7 +37,9 @@ class UserLoginSerializer(serializers.Serializer):
         email = data["email"]
         password = data["password"]
 
-        user = authenticate(username=email, password=password)
+        user_model = User.objects.get(email=email)
+
+        user = authenticate(username=user_model.username, password=password)
 
         if not user:
             raise serializers.ValidationError("Invalid credentials.")

@@ -49,8 +49,7 @@ class UserLogin(APIView):
             access_token = str(refresh.access_token)
 
             return Response({
-                "access": access_token,
-                "refresh": str(refresh)
+                "token": access_token
             }, status=status.HTTP_200_OK)
         
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
