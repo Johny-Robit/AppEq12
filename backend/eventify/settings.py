@@ -49,6 +49,8 @@ REST_FRAMEWORK = {
     ],
 }
 
+AUTH_USER_MODEL = "events.CustomUser"
+
 # Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # TODO : Supprimer en production
