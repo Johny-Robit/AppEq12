@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError 
 import logging
+import re
 
 User = get_user_model()
 
@@ -50,5 +51,32 @@ class UserLoginSerializer(serializers.Serializer):
         data["user"] = user
         return data
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['description', 'profile_image_link']
+    
+    def validate_profile_image_link(self, value):
+        """
+        Vérifie que l'URL de l'image est valide.
+        """
+        url_pattern = re.compile(
+            r'^(https?:\/\/)?'  # http:// ou https:// (optionnel)
+            r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}'  # Nom de domaine
+            r'(:\d+)?(\/.*)?$'  # Port optionnel et chemin
+        )
+
+        if not url_pattern.match(value):
+            raise ValidationError("L'URL fournie n'est pas valide.")
+
+        return value
+
+    def update(self, instance, validated_data):
+        """Met à jour uniquement les champs description et profile_image_link"""
+        instance.description = validated_data.get('description', instance.description)
+        instance.profile_image_link = validated_data.get('profile_image_link', instance.profile_image_link)
+        instance.save()
+        return instance
+    
 
 

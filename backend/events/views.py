@@ -3,10 +3,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from .models import AccessToken
+from django.contrib.auth import get_user_model
 
-from .serializers import UserLoginSerializer, UserSignupSerializer
+from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer
 import logging
 
+User = get_user_model()
 
 logger = logging.getLogger("eventify")
 
@@ -80,3 +82,50 @@ class UserLogout(APIView):
             return Response({"error": "Unexpected error logging out."}, status=status.HTTP_400_BAD_REQUEST)
 
 
+class EditProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        """Permet à l'utilisateur d'éditer son profil"""
+        try:
+            user = request.user # Récupère l'instance de User
+            serializer = UserProfileSerializer(user, data=request.data, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "Profile updated successfully"}, status=status.HTTP_200_OK)
+            
+            return Response({"error": "Description or image link is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logger.error(f"EditProfile View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetProfile(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Permet à l'utilisateur de récupérer son profil"""
+        try:
+            user = request.user  # Récupère l'instance de User
+
+            if not user:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            
+            username = user.username
+            description = user.description
+            profile_image_link = user.profile_image_link
+
+            return Response(
+                {
+                    "username": str(username),
+                    "description": str(description),
+                    "profile_image_link": str(profile_image_link)
+                },
+                status=status.HTTP_200_OK
+            )
+
+        except Exception as e:
+            logger.error(f"GetProfile View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

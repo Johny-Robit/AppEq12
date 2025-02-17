@@ -1,1 +1,5 @@
 ERROR 2025-02-09 21:53:31,969 serializers Validation Error: <class 'rest_framework.exceptions.ValidationError'>
+ERROR 2025-02-16 21:07:50,615 views EditProfile View failed: 
+ERROR 2025-02-16 21:15:14,997 views EditProfile View failed: UserProfileSerializer.validate_profile_image_link() missing 1 required positional argument: 'value'
+ERROR 2025-02-16 21:19:09,217 views EditProfile View failed: [ErrorDetail(string="L'URL de l'image n'est pas valide. Utilisez un format correct, comme 'https://example.com/image.jpg'.", code='invalid')]
+ERROR 2025-02-16 21:22:13,549 views EditProfile View failed: module 'rest_framework.status' has no attribute 'HTTP_400_INTERNAL_SERVER_ERROR'
