@@ -1,16 +1,23 @@
 <template>
   <div>
     <h1>Events</h1>
-    <input v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..." />
+    <div class="search-container">
+      <input v-model="searchQuery" @keyup.enter="performSearch" placeholder="Search events..." />
+      <button v-if="searchQuery" @click="clearSearch" class="clear-button">X</button>
+      <button @click="performSearch" class="button">
+        Search
+      </button>
+    </div>
     <p>Here are some upcoming events.</p>
     <div v-for="event in filteredEvents" :key="event.id" class="event">
-      <h2>{{ event.name }}</h2>
+      <h2 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h2>
       <p><strong>Address:</strong> {{ event.address }}</p>
-      <p><strong>Date & Time:</strong> {{ event.dateTime }} - {{ event.endTime }}</p>
+      <p><strong>Date & Time:</strong> From {{ event.dateTime }} To {{ event.endTime }}</p>
       <p><strong>Attendees:</strong> {{ event.attendees }}</p>
       <p><strong>Created by:</strong> {{ event.createdBy }}</p>
       <p>{{ event.description }}</p>
-      <button @click="handleJoinEvent(event.id)">Join Event</button>
+      <button v-if="!isJoined(event.id)" @click="handleJoinEvent(event.id)">Join Event</button>
+      <button v-else @click="handleLeaveEvent(event.id)">Leave Event</button>
       <button @click="handleInviteSomeone(event.id)">Invite Someone</button>
     </div>
   </div>
@@ -29,11 +36,18 @@ const router = useRouter()
 const route = useRoute()
 
 const filteredEvents = computed(() => {
-  return events.value.filter(event => event.name.toLowerCase().includes(searchTrigger.value.toLowerCase()))
+  return events.value.filter(event => 
+    !event.isPrivate && event.name.toLowerCase().includes(searchTrigger.value.toLowerCase())
+  )
 })
 
 const performSearch = () => {
   searchTrigger.value = searchQuery.value
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  searchTrigger.value = ''
 }
 
 const joinEvent = (eventId) => {
@@ -49,11 +63,31 @@ const confirmJoinEvent = (eventId) => {
   }
 }
 
+const leaveEvent = (eventId) => {
+  const index = joinedEventIds.value.indexOf(eventId)
+  if (index !== -1) {
+    joinedEventIds.value.splice(index, 1)
+    console.log(`Left event with ID: ${eventId}`)
+  }
+}
+
+const confirmLeaveEvent = (eventId) => {
+  if (confirm('Are you sure you want to leave this event?')) {
+    leaveEvent(eventId)
+  }
+}
+
 const handleJoinEvent = (eventId) => {
   if (!isLoggedIn.value) {
     router.push({ path: '/login', query: { redirect: route.fullPath } })
   } else {
     confirmJoinEvent(eventId)
+  }
+}
+
+const handleLeaveEvent = (eventId) => {
+  if (confirm('Are you sure you want to leave this event?')) {
+    leaveEvent(eventId)
   }
 }
 
@@ -69,6 +103,14 @@ const handleInviteSomeone = (eventId) => {
     inviteSomeone(eventId)
   }
 }
+
+const goToEvent = (eventId) => {
+  router.push({ path: `/event/${eventId}` })
+}
+
+const isJoined = (eventId) => {
+  return joinedEventIds.value.includes(eventId)
+}
 </script>
 
 <style scoped>
@@ -76,8 +118,21 @@ h1 {
   color: #42b983;
 }
 
-input {
+.search-container {
+  display: flex;
+  align-items: center;
   margin-bottom: 1em;
+}
+
+.clear-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5em;
+  color: #646464;
+}
+
+input {
   padding: 0.5em;
   width: 100%;
   box-sizing: border-box;
@@ -96,9 +151,19 @@ button {
   padding: 0.5em 1em;
   cursor: pointer;
   margin-right: 0.5em;
+  margin-left: 0.5em;
 }
 
 button:hover {
   background-color: #369f6b;
+}
+
+.event-name {
+  cursor: pointer;
+  color: #42b983;
+}
+
+.event-name:hover {
+  text-decoration: underline;
 }
 </style>

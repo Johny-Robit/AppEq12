@@ -3,14 +3,15 @@
     <h1>My Events</h1>
     <div class="tabs">
       <button :class="{ active: activeTab === 'joined' }" @click="activeTab = 'joined'">Joined Events</button>
-      <button :class="{ active: activeTab === 'invitations' }" @click="activeTab = 'invitations'">Event Invitations</button>
       <button :class="{ active: activeTab === 'created' }" @click="activeTab = 'created'">Created Events</button>
+      <button :class="{ active: activeTab === 'invitations' }" @click="activeTab = 'invitations'">Event Invitations</button>
+      <button :class="{ active: activeTab === 'past' }" @click="activeTab = 'past'">Past Events</button>
     </div>
     <div class="events-container">
       <div v-if="activeTab === 'joined'" class="joined-events">
         <div v-if="joinedEvents.length">
           <div v-for="event in joinedEvents" :key="event.id" class="event">
-            <h3>{{ event.name }}</h3>
+            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
             <p><strong>Address:</strong> {{ event.address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
             <p><strong>Attendees:</strong> {{ event.attendees }}</p>
@@ -21,10 +22,27 @@
         </div>
         <p v-else>You have not joined any events yet.</p>
       </div>
+      <div v-if="activeTab === 'created'" class="created-events">
+        <div v-if="createdEvents.length">
+          <div v-for="event in createdEvents" :key="event.id" class="event">
+            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
+            <p><strong>Address:</strong> {{ event.address }}</p>
+            <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
+            <p><strong>Created by:</strong> {{ event.createdBy }}</p>
+            <p>{{ event.description }}</p>
+            <button @click="inviteSomeone(event.id)">Invite Someone</button>
+            <button @click="editEvent(event.id)">Edit</button>
+            <button @click="confirmDeleteEvent(event.id)">Delete</button>
+          </div>
+        </div>
+        <p v-else>You have not created any events yet.</p>
+        <button @click="goToCreateEvent" class="create-event-button">Create an Event</button>
+      </div>
       <div v-if="activeTab === 'invitations'" class="event-invitations">
         <div v-if="eventInvitationsList.length">
           <div v-for="event in eventInvitationsList" :key="event.id" class="event">
-            <h3>{{ event.name }}</h3>
+            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
             <p><strong>Address:</strong> {{ event.address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
             <p><strong>Attendees:</strong> {{ event.attendees }}</p>
@@ -35,20 +53,18 @@
         </div>
         <p v-else>You have no event invitations.</p>
       </div>
-      <div v-if="activeTab === 'created'" class="created-events">
-        <div v-if="createdEvents.length">
-          <div v-for="event in createdEvents" :key="event.id" class="event">
-            <h3>{{ event.name }}</h3>
+      <div v-if="activeTab === 'past'" class="past-events">
+        <div v-if="pastEvents.length">
+          <div v-for="event in pastEvents" :key="event.id" class="event">
+            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
             <p><strong>Address:</strong> {{ event.address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
             <p><strong>Attendees:</strong> {{ event.attendees }}</p>
             <p><strong>Created by:</strong> {{ event.createdBy }}</p>
             <p>{{ event.description }}</p>
-            <button @click="editEvent(event.id)">Edit</button>
-            <button @click="confirmDeleteEvent(event.id)">Delete</button>
           </div>
         </div>
-        <p v-else>You have not created any events yet.</p>
+        <p v-else>You have no past events.</p>
       </div>
     </div>
   </div>
@@ -72,11 +88,15 @@ onMounted(() => {
 })
 
 const joinedEvents = computed(() => {
-  return events.value.filter(event => joinedEventIds.value.includes(event.id))
+  return events.value.filter(event => joinedEventIds.value.includes(event.id) && new Date(event.endTime) >= new Date())
 })
 
 const createdEvents = computed(() => {
-  return events.value.filter(event => event.createdBy === user.value.name)
+  return events.value.filter(event => event.createdBy === user.value.username && new Date(event.endTime) >= new Date())
+})
+
+const pastEvents = computed(() => {
+  return events.value.filter(event => new Date(event.endTime) < new Date())
 })
 
 const joinEvent = (eventId) => {
@@ -124,12 +144,25 @@ const editEvent = (eventId) => {
   router.push({ path: `/edit-event/${eventId}` })
 }
 
+const inviteSomeone = (eventId) => {
+  console.log(`Inviting someone to event with ID: ${eventId}`)
+  // Add logic to invite someone to the event
+}
+
 const eventInvitationsList = computed(() => {
   return events.value.filter(event => eventInvitations.value.includes(event.id))
 })
 
 const formatDateTime = (dateTime) => {
   return dateTime.replace('T', ' ')
+}
+
+const goToEvent = (eventId) => {
+  router.push({ path: `/event/${eventId}` })
+}
+
+const goToCreateEvent = () => {
+  router.push({ path: '/create-event' })
 }
 </script>
 
@@ -183,6 +216,28 @@ button {
 }
 
 button:hover {
+  background-color: #369f6b;
+}
+
+.event-name {
+  cursor: pointer;
+  color: #42b983;
+}
+
+event-name:hover {
+  text-decoration: underline;
+}
+
+.create-event-button {
+  background-color: #42b983;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  margin-top: 1em;
+}
+
+.create-event-button:hover {
   background-color: #369f6b;
 }
 </style>
