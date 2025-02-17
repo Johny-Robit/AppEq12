@@ -8,7 +8,6 @@ from .serializers import UserLoginSerializer, UserSignupSerializer
 import logging
 
 
-
 logger = logging.getLogger("eventify")
 
 class UserSignup(APIView):

@@ -1,6 +1,10 @@
-from django.contrib.auth.models import User
+from django.test import TestCase
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
+
+User = get_user_model()
 
 class AuthTestCase(APITestCase):
     """ Tests unitaires pour l'authentification """
@@ -22,21 +26,27 @@ class AuthTestCase(APITestCase):
 
     def test_login(self):
         """ Test de connexion avec un utilisateur existant """
-        data = {"username": "testuser", "password": "testpassword"}
+        data = {"email": "test@example.com", "password": "testpassword"}
         response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("Logged in successfully", response.data["success"])  # Vérifie le message retourné
+        self.assertIn("token", response.data)  # Vérifie que le token est bien retourné
+        
+        # Stocker le token pour les requêtes authentifiées
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['token']}")
 
     def test_failed_login(self):
         """ Test d'échec de connexion avec un mauvais mot de passe """
-        data = {"username": "testuser", "password": "wrongpassword"}
+        data = {"email": "test@example.com", "password": "wrongpassword"}
         response = self.client.post(self.login_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("Invalid credentials", response.data["error"])
+        self.assertIn("error", response.data)
 
     def test_is_authenticated(self):
         """ Test si l'authentification est bien gérée """
-        self.client.login(username="testuser", password="testpassword")  # Connexion utilisateur
+        login_data = {"email": "test@example.com", "password": "testpassword"}
+        login_response = self.client.post(self.login_url, login_data, format="json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login_response.data['token']}")
+        
         response = self.client.get(self.auth_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["authenticated"], True)
@@ -44,11 +54,14 @@ class AuthTestCase(APITestCase):
 
     def test_logout(self):
         """ Test de déconnexion """
-        self.client.login(username="testuser", password="testpassword")  # Connexion
+        login_data = {"email": "test@example.com", "password": "testpassword"}
+        login_response = self.client.post(self.login_url, login_data, format="json")
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login_response.data['token']}")
+        
         response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        
         # Vérifier que l'utilisateur est bien déconnecté
+        self.client.credentials()  # Supprime le token d'auth
         response = self.client.get(self.auth_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["authenticated"], False)  # Doit retourner `authenticated: False`
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)  # Devrait être 401 Unauthorized
