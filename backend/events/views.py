@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from .models import AccessToken
+from .models import AccessToken, Event
 from django.contrib.auth import get_user_model
 
 from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer, EventSerializer
@@ -132,7 +132,6 @@ class GetProfile(APIView):
 
 
 
-
 class CreateEvent(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -148,3 +147,50 @@ class CreateEvent(APIView):
         except Exception as e:
             logger.error(f"GetProfile View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class EditEvent(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        try:
+            event_id = request.data.get("event_id")
+            event = Event.objects.filter(event_id=event_id, owner=request.user).first()
+
+            if not event:
+                return Response({"error": "Event not found or unauthorized"}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = EventSerializer(event, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({"message": "Event updated successfully"}, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            logger.error(f"EditEvent View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class DeleteEvent(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        try:
+            event_id = request.data.get("event_id")
+            if not event_id:
+                return Response({"error": "Event ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+            event = Event.objects.filter(event_id=event_id, owner=request.user).first()
+
+            if not event:
+                return Response({"error": "Event not found or you do not have permission to delete it."},
+                                status=status.HTTP_404_NOT_FOUND)
+
+            event.delete()
+            return Response({"message": "Event deleted successfully"}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logger.error(f"DeleteEvent View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        

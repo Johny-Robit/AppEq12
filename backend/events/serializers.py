@@ -83,10 +83,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class EventSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField(source="event_is_public")
+    event_id = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Event
-        fields = ['event_name', 'event_address', 'start_datetime', 'end_datetime', 'description', 'is_public', 'event_image_link']
+        fields = [
+            "event_id", "event_name", "event_address", "start_datetime",
+            "end_datetime", "description", "is_public", "event_image_link"
+        ]
 
     def validate_event_image_link(self, value):
         """

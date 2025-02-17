@@ -7,3 +7,5 @@ ERROR 2025-02-16 22:59:03,775 views GetProfile View failed: 'Event' object has n
 ERROR 2025-02-16 23:02:16,737 views GetProfile View failed: You cannot call `.save()` after accessing `serializer.data`.If you need to access data before committing to the database then inspect 'serializer.validated_data' instead. 
 ERROR 2025-02-16 23:03:15,256 views GetProfile View failed: 'Event' object has no attribute 'id'
 ERROR 2025-02-16 23:06:16,889 views GetProfile View failed: 'Event' object has no attribute 'id'
+ERROR 2025-02-16 23:21:58,164 views EditEvent View failed: Cannot resolve keyword 'id' into field. Choices are: attendees, description, end_datetime, event_address, event_id, event_image_link, event_is_public, event_name, owner, owner_id, pending_invites, start_datetime
+ERROR 2025-02-16 23:28:48,471 views EditEvent View failed: The field 'is_public' was declared on serializer EventSerializer, but has not been included in the 'fields' option.

@@ -19,9 +19,9 @@
 - [**LeaveEvent**](#leaveevent-put) (PUT)
 - [**InviteToEvent**](#invitetoevent-put) (PUT)
 - [**RemoveAttendee**](#removeattendee-put-autorisation) (PUT) [Autorisation]
-- [**CreateEvent**](#createevent-post) (POST)
-- [**EditEvent**](#editevent-put-autorisation) (PUT) [Autorisation]
-- [**DeleteEvent**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
+- [**CreateEvent - complete**](#createevent-post) (POST)
+- [**EditEvent - complete**](#editevent-put-autorisation) (PUT) [Autorisation]
+- [**DeleteEvent - complete**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
 - [**GetEventInformations**](#geteventinformations-get-public) (GET) (Public)
 - [**GetAttendeesList**](#getattendeeslist-get) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
