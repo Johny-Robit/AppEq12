@@ -12,9 +12,18 @@
 
 ## Django auth_user
 
+- **id** *(int)* → Numéro de référence de l'utilisateur
 - **password** *(Hashed)* → Mot de passe sécurisé
 - **token** → Jeton d'authentification
-- **username** *(FK: UserID)* → Référence vers l'utilisateur
+- **username** *(FK: UserID)* → Nom de l'utilisateur
+- **email** *(String)* → Courriel de l'utilisateur
+
+## events_accesstoken
+
+- **id** *(int)* → Référence de l'enregistrement
+- **token** → Jeton d'authentification
+- **create_at** *(Datetime)* → Date et heure de début
+- **user_id** *(FK: UserID)* → Référence vers l'utilisateur
 
 ## Event
 

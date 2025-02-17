@@ -3,31 +3,32 @@
 # Appels API
 
 ## User
-- **Signup** (POST) (Public)
-- **Login** (Public)
-- **Logout**
-- **EditProfile** (PUT)
-- **GetProfileInfo** (GET)
-- **GetJoinedEventsList** (GET)  
+- [**Signup - complete**](#signup-post-public) (POST) (Public)
+- [**Login - complete**](#login-post-public) (Public)
+- [**Logout - complete**](#logout)
+- [**EditProfile - complete**](#editprofile-put) (PUT)
+- [**GetProfileInfo - complete**](#getprofileinfo-get) (GET)
+- [**GetJoinedEventsList**](#getjoinedeventslist-get) (GET)  
   - // avoir la liste des évènements auxquels l’utilisateur a été invité
-- **GetEventInvitesList** (GET)
-- **GetCreatedEventsList** (GET)  
+- [**GetEventInvitesList**](#geteventinviteslist-get) (GET)
+- [**GetCreatedEventsList**](#getcreatedeventslist-get) (GET)  
   - // avoir la liste des évènements que l’utilisateur a créés
 
 ## Event
-- **JoinEvent** (PUT)
-- **LeaveEvent** (PUT)
-- **InviteToEvent** (PUT)
-- **RemoveAttendee** (PUT) [Autorisation]
-- **CreateEvent** (POST)
-- **EditEvent** (PUT) [Autorisation]
-- **DeleteEvent** (DELETE) [Autorisation]
-- **GetEventInformations** (GET) (Public)
-- **GetAttendeesList** (GET)  
+- [**JoinEvent**](#joinevent-put) (PUT)
+- [**LeaveEvent**](#leaveevent-put) (PUT)
+- [**InviteToEvent**](#invitetoevent-put) (PUT)
+- [**RemoveAttendee**](#removeattendee-put-autorisation) (PUT) [Autorisation]
+- [**CreateEvent - complete**](#createevent-post) (POST)
+- [**EditEvent - complete**](#editevent-put-autorisation) (PUT) [Autorisation]
+- [**DeleteEvent - complete**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
+- [**GetEventInformations**](#geteventinformations-get-public) (GET) (Public)
+- [**GetAttendeesList**](#getattendeeslist-get) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
-- **GetPendingInvites** (GET)  
+- [**GetPendingInvites**](#getpendinginvites-get) (GET)  
   - // avoir la liste des personnes qui doivent encore confirmer leur présence
 
+---
 
 ## User API
 
@@ -61,6 +62,8 @@
   }
   ```
 
+---
+
 ### Login (POST) (Public)
 
 **Endpoint:** `/api/user/login/`
@@ -89,6 +92,8 @@
   }
   ```
 
+---
+
 ### Logout (POST) (Authenticated)
 
 **Endpoint:** `/api/user/logout/`
@@ -108,6 +113,8 @@ Authorization: Bearer <access_token>
   ```
 
 - **401 Unauthorized** (Si token invalide)
+
+---
 
 ### Edit Profile (PUT) (Authenticated)
 
@@ -137,6 +144,8 @@ Authorization: Bearer <access_token>
 
 - **400 Bad Request** (Si problème de validation)
 
+---
+
 ### Get Profile Info (GET) (Authenticated)
 
 **Endpoint:** `/api/user/profile/`
@@ -158,6 +167,8 @@ Authorization: Bearer <access_token>
   ```
 
 - **404 Not Found** (Si utilisateur non trouvé)
+
+---
 
 ### Get Joined Events List (GET) (Authenticated)
 
@@ -182,6 +193,8 @@ Authorization: Bearer <access_token>
 ]
 ```
 
+---
+
 ### Get Event Invites List (GET) (Authenticated)
 
 **Endpoint:** `/api/user/events/invites/`
@@ -204,6 +217,8 @@ Authorization: Bearer <access_token>
   }
 ]
 ```
+
+---
 
 ### Get Created Events List (GET) (Authenticated)
 
@@ -228,7 +243,11 @@ Authorization: Bearer <access_token>
 ]
 ```
 
+---
+
 ## Event API
+
+---
 
 ### Join Event (PUT) (Authenticated)
 
@@ -269,6 +288,8 @@ Authorization: Bearer <access_token>
   }
   ```
 
+---
+
 ### Leave Event (PUT) (Authenticated)
 
 **Endpoint:** `/api/event/leave/`
@@ -301,6 +322,8 @@ Authorization: Bearer <access_token>
   }
   ```
 
+---
+
 ### Invite to Event (PUT) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/invite/`
@@ -318,6 +341,8 @@ Authorization: Bearer <access_token>
 }
 ```
 
+---
+
 ### Remove Attendee (PUT) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/remove_attendee/`
@@ -334,6 +359,8 @@ Authorization: Bearer <access_token>
   "user_id": "integer"
 }
 ```
+
+---
 
 ### Create Event (POST) (Authenticated)
 
@@ -374,6 +401,8 @@ Authorization: Bearer <access_token>
   }
   ```
 
+---
+
 ### Edit Event (PUT) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/edit/`
@@ -396,6 +425,8 @@ Authorization: Bearer <access_token>
 }
 ``` 
 
+---
+
 ### Delete Event (DELETE) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/delete/`
@@ -411,6 +442,8 @@ Authorization: Bearer <access_token>
   "event_id": "integer"
 }
 ```
+
+---
 
 ### Get Event Information (GET) (Public)
 
@@ -438,6 +471,8 @@ Authorization: Bearer <access_token>
   }
   ```
 
+---
+
 ### Get Attendees List (GET) (Authenticated)
 
 **Endpoint:** `/api/event/{event_id}/attendees/`
@@ -455,6 +490,8 @@ Authorization: Bearer <access_token>
   }
 ]
 ```
+
+---
 
 ### Get Pending Invites (GET) (Authenticated, Owner Only)
 

@@ -16,3 +16,9 @@ dist/
 
 # Vite cache
 .vite/
+
+# Fichiers Python compilés
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
