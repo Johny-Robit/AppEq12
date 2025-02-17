@@ -13,6 +13,7 @@
       <RouterLink v-if="!isLoggedIn && !isAuthPage" to="/login">Login</RouterLink>
       <div v-if="isLoggedIn" class="avatar-container" @click="toggleDropdown">
         <img src="../assets/Default_Avatar_Icon.jpg" alt="Avatar" class="avatar" />
+        <span class="username">{{ user.username }}</span>
         <div v-if="dropdownVisible" class="dropdown-menu">
           <RouterLink to="/profile">Profile</RouterLink>
           <button @click="logout">Logout</button>
@@ -25,7 +26,7 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { isLoggedIn } from '../auth.js'
+import { isLoggedIn, user } from '../auth.js'
 
 const route = useRoute()
 const router = useRouter()
@@ -83,7 +84,7 @@ nav a:hover {
   display: flex;
   align-items: center;
   gap: 1em;
-  margin-right: 2em;
+  margin-right: 3em;
 }
 
 .separator {
@@ -113,6 +114,8 @@ nav a:hover {
 }
 
 .avatar-container {
+  display: flex;
+  align-items: center;
   position: relative;
   cursor: pointer;
 }
@@ -121,6 +124,14 @@ nav a:hover {
   width: 30px;
   height: 30px;
   border-radius: 50%;
+}
+
+.username {
+  margin-left: 10px;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
 }
 
 .dropdown-menu {
@@ -133,6 +144,7 @@ nav a:hover {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  width: 150px; /* Increased width */
 }
 
 .dropdown-menu a,

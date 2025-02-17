@@ -27,7 +27,10 @@
         <input type="checkbox" v-model="isPrivate" />
       </div>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-      <button type="submit">Create Event</button>
+      <div class="buttons">
+        <button type="submit">Create Event</button>
+        <button type="button" @click="confirmCancelEvent">Cancel</button>
+      </div>
     </form>
   </div>
 </template>
@@ -69,7 +72,7 @@ const createEvent = () => {
     endTime: endTime.value,
     attendees: 0,
     description: description.value,
-    createdBy: user.value.name,
+    createdBy: user.value.username,
     isPrivate: isPrivate.value,
   }
   events.value.push(newEvent)
@@ -80,6 +83,12 @@ const createEvent = () => {
 const confirmCreateEvent = () => {
   if (confirm('Are you sure you want to create this event?')) {
     createEvent()
+  }
+}
+
+const confirmCancelEvent = () => {
+  if (confirm('Are you sure you want to cancel creating this event?')) {
+    router.push('/events')
   }
 }
 </script>
@@ -111,6 +120,12 @@ input, textarea {
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1em;
 }
 
 button {
