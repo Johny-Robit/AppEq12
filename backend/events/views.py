@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import AccessToken
 from django.contrib.auth import get_user_model
 
-from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer
+from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer, EventSerializer
 import logging
 
 User = get_user_model()
@@ -126,6 +126,25 @@ class GetProfile(APIView):
                 status=status.HTTP_200_OK
             )
 
+        except Exception as e:
+            logger.error(f"GetProfile View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+class CreateEvent(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            serializer = EventSerializer(data=request.data)
+            if serializer.is_valid():
+                event = serializer.save(owner=request.user)
+                return Response({"message": "Event created successfully", "event_id": event.event_id}, status=status.HTTP_201_CREATED)
+            
+            return Response({"error": "Invalid input data"}, status=status.HTTP_400_BAD_REQUEST)
+        
         except Exception as e:
             logger.error(f"GetProfile View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

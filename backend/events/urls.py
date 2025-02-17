@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import UserSignup, UserLogin, UserLogout, EditProfile, GetProfile
+from .views import UserSignup, UserLogin, UserLogout, EditProfile, GetProfile, CreateEvent
 
 urlpatterns = [
     # Endpoints User
@@ -8,4 +8,5 @@ urlpatterns = [
     path("user/logout/", UserLogout.as_view(), name="logout"),
     path("user/profile/edit/", EditProfile.as_view(), name="edit-profile"),
     path("user/profile/", GetProfile.as_view(), name="get-profile"),
+    path("event/create/", CreateEvent.as_view(), name="create-event"),
 ]

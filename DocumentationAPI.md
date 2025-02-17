@@ -3,29 +3,29 @@
 # Appels API
 
 ## User
-- **Signup** (POST) (Public)
-- **Login** (Public)
-- **Logout**
-- **EditProfile** (PUT)
-- **GetProfileInfo** (GET)
-- **GetJoinedEventsList** (GET)  
+- [**Signup - complete**](#signup-post-public) (POST) (Public)
+- [**Login - complete**](#login-post-public) (Public)
+- [**Logout - complete**](#logout)
+- [**EditProfile - complete**](#editprofile-put) (PUT)
+- [**GetProfileInfo - complete**](#getprofileinfo-get) (GET)
+- [**GetJoinedEventsList**](#getjoinedeventslist-get) (GET)  
   - // avoir la liste des évènements auxquels l’utilisateur a été invité
-- **GetEventInvitesList** (GET)
-- **GetCreatedEventsList** (GET)  
+- [**GetEventInvitesList**](#geteventinviteslist-get) (GET)
+- [**GetCreatedEventsList**](#getcreatedeventslist-get) (GET)  
   - // avoir la liste des évènements que l’utilisateur a créés
 
 ## Event
-- **JoinEvent** (PUT)
-- **LeaveEvent** (PUT)
-- **InviteToEvent** (PUT)
-- **RemoveAttendee** (PUT) [Autorisation]
-- **CreateEvent** (POST)
-- **EditEvent** (PUT) [Autorisation]
-- **DeleteEvent** (DELETE) [Autorisation]
-- **GetEventInformations** (GET) (Public)
-- **GetAttendeesList** (GET)  
+- [**JoinEvent**](#joinevent-put) (PUT)
+- [**LeaveEvent**](#leaveevent-put) (PUT)
+- [**InviteToEvent**](#invitetoevent-put) (PUT)
+- [**RemoveAttendee**](#removeattendee-put-autorisation) (PUT) [Autorisation]
+- [**CreateEvent**](#createevent-post) (POST)
+- [**EditEvent**](#editevent-put-autorisation) (PUT) [Autorisation]
+- [**DeleteEvent**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
+- [**GetEventInformations**](#geteventinformations-get-public) (GET) (Public)
+- [**GetAttendeesList**](#getattendeeslist-get) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
-- **GetPendingInvites** (GET)  
+- [**GetPendingInvites**](#getpendinginvites-get) (GET)  
   - // avoir la liste des personnes qui doivent encore confirmer leur présence
 
 
