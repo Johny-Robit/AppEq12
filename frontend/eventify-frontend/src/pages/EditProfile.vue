@@ -1,117 +1,99 @@
 <template>
-  <div class="edit-profile-container">
+  <div class="edit-profile">
     <h1>Edit Profile</h1>
-    <form @submit.prevent="confirmUpdateProfile">
-      <div class="form-group">
+    <form @submit.prevent="submitForm">
+      <div>
         <label for="username">Username:</label>
-        <input type="text" v-model="username" required />
+        <input type="text" id="username" v-model="form.username" />
       </div>
-      <div class="form-group">
+      <div>
         <label for="email">Email:</label>
-        <input type="email" v-model="email" required />
+        <input type="email" id="email" v-model="form.email" />
       </div>
-      <div class="form-group">
-        <label for="password">New Password:</label>
-        <input type="password" v-model="password" />
+      <div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" v-model="form.password" />
       </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm New Password:</label>
-        <input type="password" v-model="confirmPassword" />
+      <div>
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" v-model="form.confirmPassword" />
       </div>
-      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
-      <button type="submit">Update Profile</button>
+      <button type="submit">Save Changes</button>
     </form>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
+<script>
+import { user } from '../auth';
 
-const username = ref('')
-const email = ref('')
-const password = ref('')
-const confirmPassword = ref('')
-const errorMessage = ref('')
-
-const router = useRouter()
-
-onMounted(() => {
-  if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: '/edit-profile' } })
-  } else {
-    username.value = user.value.username
-    email.value = user.value.email
+export default {
+  data() {
+    return {
+      form: {
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      }
+    };
+  },
+  created() {
+    this.fetchUserData();
+  },
+  methods: {
+    fetchUserData() {
+      this.form.username = user.value.username;
+      this.form.email = user.value.email;
+    },
+    submitForm() {
+      if (this.form.password !== this.form.confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+      // Handle form submission logic here
+      console.log('Form submitted:', this.form);
+      // ...additional logic to update the profile...
+    }
   }
-})
-
-const updateProfile = () => {
-  if (password.value && password.value !== confirmPassword.value) {
-    errorMessage.value = 'Passwords do not match'
-    return
-  }
-
-  user.value.username = username.value
-  user.value.email = email.value
-  if (password.value) {
-    user.value.password = password.value
-  }
-  console.log('Profile updated:', user.value)
-  router.push('/profile')
-}
-
-const confirmUpdateProfile = () => {
-  if (confirm('Are you sure you want to update your profile?')) {
-    updateProfile()
-  }
-}
+};
 </script>
 
 <style scoped>
-.edit-profile-container {
-  border: 1px solid #ccc;
-  padding: 2em;
-  border-radius: 8px;
-  background-color: #343a40;
-  color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.edit-profile {
   max-width: 600px;
-  width: 100%;
-  margin: 2em auto;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1em;
-}
-
-label {
-  margin-bottom: 0.5em;
-}
-
-input {
-  padding: 0.5em;
+  margin: 0 auto;
+  padding: 20px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 70%;
 }
-
-button {
-  padding: 0.5em 1em;
+.edit-profile h1 {
+  text-align: center;
+}
+.edit-profile form div {
+  margin-bottom: 15px;
+  text-align: left;
+}
+.edit-profile form label {
+  display: block;
+  margin-bottom: 5px;
+}
+.edit-profile form input {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+.edit-profile form button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
   border: none;
   border-radius: 4px;
-  background-color: #42b983;
-  color: white;
   cursor: pointer;
 }
-
-button:hover {
-  background-color: #369f6b;
-}
-
-.error {
-  color: red;
-  margin-bottom: 1em;
+.edit-profile form button:hover {
+  background-color: #0056b3;
 }
 </style>
