@@ -3,32 +3,30 @@
 # Appels API
 
 ## User
-- [**Signup - COMPLETE**](#signup-post-public) (POST) (Public)
-- [**Login - COMPLETE**](#login-post-public) (Public)
-- [**Logout - COMPLETE**](#logout)
-- [**EditProfile - COMPLETE**](#editprofile-put) (PUT)
-- [**GetProfileInfo - COMPLETE**](#getprofileinfo-get) (GET)
-- [**GetJoinedEventsList - COMPLETE**](#getjoinedeventslist-get) (GET)  
+- [**Signup**](#signup-post-public) (POST) (Public)
+- [**Login**](#login-post-public) (Public)
+- [**Logout**](#logout-post-authenticated)
+- [**EditProfile**](#edit-profile-put-authenticated) (PUT)
+- [**GetProfileInfo**](#get-profile-info-get-authenticated) (GET)
+- [**GetJoinedEventsList**](#get-joined-events-list-get-authenticated) (GET)  
   - // avoir la liste des évènements que l'utilisateur a rejoint
-
-- [**GetUserInvitations**](#geteventinviteslist-get) (GET)
+- [**GetUserInvitations**](#get-user-invitations-list-get-authenticated) (GET)
   - // avoir la liste des évènements auxquels l’utilisateur a été invité
-
-- [**GetCreatedEventsList**](#getcreatedeventslist-get) (GET)  
+- [**GetCreatedEventsList**](#get-created-events-list-get-authenticated) (GET)  
   - // avoir la liste des évènements que l’utilisateur a créés
 
 ## Event
-- [**JoinEvent - COMPLETE**](#joinevent-put) (PUT)
-- [**LeaveEvent - COMPLETE**](#leaveevent-put) (PUT)
-- [**InviteToEvent - COMPLETE**](#invitetoevent-put) (PUT)
-- [**RemoveAttendee - COMPLETE**](#removeattendee-put-autorisation) (PUT) [Autorisation]
-- [**CreateEvent - COMPLETE**](#createevent-post) (POST)
-- [**EditEvent - COMPLETE**](#editevent-put-autorisation) (PUT) [Autorisation]
-- [**DeleteEvent - COMPLETE**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
-- [**GetEventInformations - COMPLETE**](#get-event-informations) (GET) (Public)
-- [**GetAttendeesList - COMPLETE**](#getattendeeslist-get) (GET)  
+- [**JoinEvent**](#join-event-put-authenticated) (PUT)
+- [**LeaveEvent**](#leave-event-put-authenticated) (PUT)
+- [**InviteToEvent**](#invite-to-event-put-authenticated-owner-only) (PUT)
+- [**RemoveAttendee**](#remove-attendee-put-authenticated-owner-only) (PUT) [Autorisation]
+- [**CreateEvent**](#create-event-post-authenticated) (POST)
+- [**EditEvent**](#edit-event-put-authenticated-owner-only) (PUT) [Autorisation]
+- [**DeleteEvent**](#delete-event-delete-authenticated-owner-only) (DELETE) [Autorisation]
+- [**GetEventInformations**](#get-event-information-get-public) (GET) (Public)
+- [**GetAttendeesList**](#get-attendees-list-get-authenticated) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
-- [**GetPendingInvites - COMPLETE**](#getpendinginvites-get) (GET)  
+- [**GetPendingInvites**](#get-pending-invites-get-authenticated-owner-only) (GET)  
   - // avoir la liste des personnes qui doivent encore confirmer leur présence
 
 
