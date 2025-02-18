@@ -18,6 +18,8 @@ DEBUG = False
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29fb10cbb7c2.herokuapp.com').split(',')
 
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"
 
 # Applications Django
 INSTALLED_APPS = [
