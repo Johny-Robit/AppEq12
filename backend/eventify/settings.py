@@ -12,7 +12,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # TODO put in dot env
 SECRET_KEY = 'django-insecure-977twumu=p=jpaav(ie1*)&x04b9k3y=+^1f5)xg&ce7i5c(n^'
 # TODO don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Domaines autorisés
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Packages
-    'corsheaders',  # TODO : Supprimer en production
     'rest_framework',
 
     # Application interne
@@ -53,7 +52,6 @@ AUTH_USER_MODEL = "events.CustomUser"
 
 # Middleware
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # TODO : Supprimer en production
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
