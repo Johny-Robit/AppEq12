@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 
 # Base directory
@@ -9,14 +10,13 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 # Sécurité
-# TODO put in dot env
-SECRET_KEY = 'django-insecure-977twumu=p=jpaav(ie1*)&x04b9k3y=+^1f5)xg&ce7i5c(n^'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+
 # TODO don't run with debug turned on in production!
 DEBUG = False
-
 # Domaines autorisés
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else ["yourdomain.com"]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29fb10cbb7c2.herokuapp.com').split(',')
 
 
 # Applications Django
@@ -64,14 +64,7 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
+    'default': dj_database_url.config(default=os.getenv('JAWSDB_URL'))
 }
 
 # CORS Headers pour le développement
