@@ -19,5 +19,5 @@ setuptools==75.8.0
 sqlparse==0.5.3
 tomli==2.2.1
 typing_extensions==4.12.2
-tzdata==2025a
+tzdata
 wheel==0.45.1
