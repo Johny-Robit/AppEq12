@@ -64,15 +64,10 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('JAWSDB_URL'))
+    'default': dj_database_url.config(env='JAWSDB_URL', default='sqlite:///db.sqlite3')
 }
 
-# CORS Headers pour le développement
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:8000',
-]
+# TODO CORS Headers pour le développement removed
 
 
 # Paramètrage pour la validation de passwords
