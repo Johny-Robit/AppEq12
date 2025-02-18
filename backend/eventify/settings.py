@@ -10,7 +10,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 # Sécurité
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # TODO don't run with debug turned on in production!
 DEBUG = False
