@@ -113,7 +113,7 @@ class GetEventSerializer(serializers.ModelSerializer):
         model = Event
         fields = [
             "ownerID", "event_name", "event_address", "start_datetime",
-            "end_datetime", "description", "is_public"
+            "end_datetime", "description", "is_public", "event_id"
         ]
 
 class AttendeeSerializer(serializers.ModelSerializer):

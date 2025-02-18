@@ -131,6 +131,20 @@ class GetProfile(APIView):
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class GetJoinedEventsList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            joined_events = Event.objects.filter(attendees=request.user)
+
+            serializer = GetEventSerializer(joined_events, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"GetJoinedEventsList View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class JoinEvent(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -218,6 +232,45 @@ class InviteToEvent(APIView):
             return Response({"message": "Invited to event successfully"}, status=status.HTTP_200_OK)
         except Exception as e:
             logger.error(f"InviteToEvent View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class RemoveAttendee(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request):
+        try:
+            event_id = request.data.get("event_id")
+            user_id = request.data.get("user_id")
+            event = Event.objects.filter(event_id=event_id).first()
+            user = User.objects.filter(id=user_id).first()
+
+            # Check if event is owned by user
+            if event.owner != request.user:
+                return Response({"error": "Unauthorized access"}, status=status.HTTP_403_FORBIDDEN)
+
+            # check if user_id is owner's id
+            if int(user_id) == event.owner.id:
+                return Response({"error": "Owner cannot be removed from attendees"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+            # Check if event exists
+            if not event:
+                return Response({"error": "Event not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Check if user exists
+            if not user:
+                return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Check if user is an attendee
+            if not event.attendees.filter(id=user_id).exists():
+                return Response({"error": "User is not part of the event"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Remove user from attendees
+            event.attendees.remove(user)
+            return Response({"message": "Removed attendee successfully"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"RemoveAttendee View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

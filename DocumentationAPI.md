@@ -8,6 +8,7 @@
 - [**Logout - COMPLETE**](#logout)
 - [**EditProfile - COMPLETE**](#editprofile-put) (PUT)
 - [**GetProfileInfo - COMPLETE**](#getprofileinfo-get) (GET)
+
 - [**GetJoinedEventsList**](#getjoinedeventslist-get) (GET)  
   - // avoir la liste des évènements auxquels l’utilisateur a été invité
 - [**GetEventInvitesList**](#geteventinviteslist-get) (GET)
@@ -18,14 +19,14 @@
 - [**JoinEvent - COMPLETE**](#joinevent-put) (PUT)
 - [**LeaveEvent - COMPLETE**](#leaveevent-put) (PUT)
 - [**InviteToEvent - COMPLETE**](#invitetoevent-put) (PUT)
-- [**RemoveAttendee**](#removeattendee-put-autorisation) (PUT) [Autorisation]
+- [**RemoveAttendee - COMPLETE**](#removeattendee-put-autorisation) (PUT) [Autorisation]
 - [**CreateEvent - COMPLETE**](#createevent-post) (POST)
 - [**EditEvent - COMPLETE**](#editevent-put-autorisation) (PUT) [Autorisation]
 - [**DeleteEvent - COMPLETE**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
 - [**GetEventInformations - COMPLETE**](#get-event-informations) (GET) (Public)
 - [**GetAttendeesList - COMPLETE**](#getattendeeslist-get) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
-- [**GetPendingInvites**](#getpendinginvites-get) (GET)  
+- [**GetPendingInvites - COMPLETE**](#getpendinginvites-get) (GET)  
   - // avoir la liste des personnes qui doivent encore confirmer leur présence
 
 
