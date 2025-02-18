@@ -10,7 +10,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Sécurité
 # TODO put in dot env
-SECRET_KEY = 'django-insecure-977twumu=p=jpaav(ie1*)&x04b9k3y=+^1f5)xg&ce7i5c(n^'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # TODO don't run with debug turned on in production!
 DEBUG = True
 
