@@ -79,8 +79,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-
-
 class EventSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField(source="event_is_public")
     event_id = serializers.IntegerField(read_only=True)
@@ -107,5 +105,18 @@ class EventSerializer(serializers.ModelSerializer):
 
         return value
     
+class GetEventSerializer(serializers.ModelSerializer):
+    ownerID = serializers.IntegerField(source="owner.id", read_only=True)
+    is_public = serializers.BooleanField(source="event_is_public")
 
+    class Meta:
+        model = Event
+        fields = [
+            "ownerID", "event_name", "event_address", "start_datetime",
+            "end_datetime", "description", "is_public"
+        ]
 
+class AttendeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id"]

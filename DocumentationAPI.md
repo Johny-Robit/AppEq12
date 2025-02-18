@@ -3,11 +3,11 @@
 # Appels API
 
 ## User
-- [**Signup - complete**](#signup-post-public) (POST) (Public)
-- [**Login - complete**](#login-post-public) (Public)
-- [**Logout - complete**](#logout)
-- [**EditProfile - complete**](#editprofile-put) (PUT)
-- [**GetProfileInfo - complete**](#getprofileinfo-get) (GET)
+- [**Signup - COMPLETE**](#signup-post-public) (POST) (Public)
+- [**Login - COMPLETE**](#login-post-public) (Public)
+- [**Logout - COMPLETE**](#logout)
+- [**EditProfile - COMPLETE**](#editprofile-put) (PUT)
+- [**GetProfileInfo - COMPLETE**](#getprofileinfo-get) (GET)
 - [**GetJoinedEventsList**](#getjoinedeventslist-get) (GET)  
   - // avoir la liste des évènements auxquels l’utilisateur a été invité
 - [**GetEventInvitesList**](#geteventinviteslist-get) (GET)
@@ -15,15 +15,15 @@
   - // avoir la liste des évènements que l’utilisateur a créés
 
 ## Event
-- [**JoinEvent**](#joinevent-put) (PUT)
-- [**LeaveEvent**](#leaveevent-put) (PUT)
-- [**InviteToEvent**](#invitetoevent-put) (PUT)
+- [**JoinEvent - COMPLETE**](#joinevent-put) (PUT)
+- [**LeaveEvent - COMPLETE**](#leaveevent-put) (PUT)
+- [**InviteToEvent - COMPLETE**](#invitetoevent-put) (PUT)
 - [**RemoveAttendee**](#removeattendee-put-autorisation) (PUT) [Autorisation]
-- [**CreateEvent - complete**](#createevent-post) (POST)
-- [**EditEvent - complete**](#editevent-put-autorisation) (PUT) [Autorisation]
-- [**DeleteEvent - complete**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
-- [**GetEventInformations**](#geteventinformations-get-public) (GET) (Public)
-- [**GetAttendeesList**](#getattendeeslist-get) (GET)  
+- [**CreateEvent - COMPLETE**](#createevent-post) (POST)
+- [**EditEvent - COMPLETE**](#editevent-put-autorisation) (PUT) [Autorisation]
+- [**DeleteEvent - COMPLETE**](#deleteevent-delete-autorisation) (DELETE) [Autorisation]
+- [**GetEventInformations - COMPLETE**](#get-event-informations) (GET) (Public)
+- [**GetAttendeesList - COMPLETE**](#getattendeeslist-get) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
 - [**GetPendingInvites**](#getpendinginvites-get) (GET)  
   - // avoir la liste des personnes qui doivent encore confirmer leur présence
