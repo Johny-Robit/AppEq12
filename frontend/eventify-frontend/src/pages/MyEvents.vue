@@ -73,7 +73,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
+import { isLoggedIn, user } from '../store/user' // Import isLoggedIn from the user store
 import { joinedEventIds, events, eventInvitations } from '../events.js'
 
 const router = useRouter()

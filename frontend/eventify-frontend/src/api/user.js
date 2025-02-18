@@ -1,13 +1,17 @@
 import axios from 'axios';
 
-const API_URL = '/api/user';
+const API_URL = 'http://localhost:8000/api/user'; // Ensure this points to the backend server address
 
 export const signup = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}/signup/`, userData);
     return response.data;
   } catch (error) {
-    throw error.response.data;
+    if (error.response) {
+      throw error.response.data;
+    } else {
+      throw { error: 'Network error or server is not responding' };
+    }
   }
 };
 

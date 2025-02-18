@@ -9,7 +9,7 @@ import EditEvent from '../pages/EditEvent.vue'
 import Profile from '../pages/Profile.vue'
 import EditProfile from '../pages/EditProfile.vue'
 import Event from '../pages/Event.vue'
-import { isLoggedIn } from '../auth.js'
+import { isLoggedIn } from '../store/user.js'
 
 const routes = [
   { path: '/', component: Home },

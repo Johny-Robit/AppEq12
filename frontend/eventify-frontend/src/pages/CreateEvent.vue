@@ -38,7 +38,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
+import { isLoggedIn, user } from '../store/user' // Import isLoggedIn from the user store
 import { events } from '../events.js'
 
 const name = ref('')

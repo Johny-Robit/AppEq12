@@ -1,39 +1,30 @@
 <template>
   <div class="edit-profile">
-    <h1>Edit Profile</h1>
+    <h1>Edit Description</h1>
     <form @submit.prevent="submitForm">
       <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" v-model="form.username" />
+        <label for="description">Description:</label>
+        <textarea id="description" v-model="form.description"></textarea>
       </div>
-      <div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" v-model="form.email" />
+      <div class="buttons">
+        <button type="submit">Save Changes</button>
+        <button type="button" @click="cancelChanges">Cancel</button>
       </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" v-model="form.password" />
-      </div>
-      <div>
-        <label for="confirmPassword">Confirm Password:</label>
-        <input type="password" id="confirmPassword" v-model="form.confirmPassword" />
-      </div>
-      <button type="submit">Save Changes</button>
     </form>
   </div>
 </template>
 
 <script>
-import { user } from '../auth';
+import { user, fetchUserProfile, isLoggedIn } from '../store/user'; // Import the user store
+import { editProfile } from '../api/user'; // Import the editProfile API function
+import { useRouter } from 'vue-router';
 
 export default {
   data() {
     return {
       form: {
         username: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
+        description: ''
       }
     };
   },
@@ -41,18 +32,28 @@ export default {
     this.fetchUserData();
   },
   methods: {
-    fetchUserData() {
-      this.form.username = user.value.username;
-      this.form.email = user.value.email;
+    async fetchUserData() {
+      await fetchUserProfile()
+      this.form.username = user.value.username
+      this.form.description = user.value.description
     },
-    submitForm() {
-      if (this.form.password !== this.form.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
+    async submitForm() {
+      try {
+        const token = localStorage.getItem('token')
+        const profileData = {
+          description: this.form.description
+        }
+        await editProfile(token, profileData)
+        console.log('Profile updated successfully')
+        await fetchUserProfile()
+        this.$router.push('/profile')
+      } catch (error) {
+        console.error('Failed to update profile:', error)
+        alert('Failed to update profile')
       }
-      // Handle form submission logic here
-      console.log('Form submitted:', this.form);
-      // ...additional logic to update the profile...
+    },
+    cancelChanges() {
+      this.$router.push('/profile');
     }
   }
 };
@@ -78,14 +79,18 @@ export default {
   display: block;
   margin-bottom: 5px;
 }
-.edit-profile form input {
+.edit-profile form input,
+.edit-profile form textarea {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
 }
+.edit-profile form .buttons {
+  display: flex;
+  justify-content: space-between;
+}
 .edit-profile form button {
-  display: block;
-  width: 100%;
+  width: 48%;
   padding: 10px;
   background-color: #007bff;
   color: white;

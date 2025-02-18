@@ -3,8 +3,8 @@
     <h1>Signup</h1>
     <form @submit.prevent="signup">
       <div class="form-group">
-        <label for="name">Username:</label>
-        <input type="text" v-model="name" required />
+        <label for="username">Username:</label>
+        <input type="text" v-model="username" required />
       </div>
       <div class="form-group">
         <label for="email">Email:</label>
@@ -26,18 +26,35 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { signup as signupAPI } from '../api/user'
 
-const name = ref('')
+const username = ref('')
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
 
-const signup = () => {
+const router = useRouter()
+
+const signup = async () => {
   if (password.value !== confirmPassword.value) {
     alert('Passwords do not match')
     return
   }
-  console.log('Signing up with', name.value, email.value, password.value)
+  try {
+    const userData = {
+      username: username.value,
+      email: email.value,
+      password: password.value
+    }
+    const response = await signupAPI(userData)
+    console.log('Signup successful:', response)
+    // Redirect to login page after successful signup
+    router.push('/login')
+  } catch (error) {
+    console.error('Signup error:', error)
+    alert('Signup failed: ' + error.error)
+  }
 }
 </script>
 

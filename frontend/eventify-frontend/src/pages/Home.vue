@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { isLoggedIn } from '../auth.js'
+import { isLoggedIn } from '../store/user'
 
 console.log('isLoggedIn:', isLoggedIn.value)
 </script>

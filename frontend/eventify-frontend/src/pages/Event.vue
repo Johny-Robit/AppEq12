@@ -22,7 +22,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { events, joinedEventIds } from '../events.js'
-import { isLoggedIn, user } from '../auth.js'
+import { isLoggedIn, user } from '../store/user.js'
 
 const event = ref(null)
 const isJoined = ref(false)

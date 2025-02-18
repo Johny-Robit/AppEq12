@@ -24,9 +24,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
+import { isLoggedIn, user, fetchUserProfile } from '../store/user' // Import the user store
+import { logout as logoutAPI } from '../api/user' // Import the logout API function
 
 const route = useRoute()
 const router = useRouter()
@@ -37,10 +38,22 @@ const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
 }
 
-const logout = () => {
-  isLoggedIn.value = false
-  router.push('/')
+const logout = async () => {
+  try {
+    const token = localStorage.getItem('token')
+    await logoutAPI(token)
+    isLoggedIn.value = false
+    localStorage.removeItem('token')
+    router.push('/')
+  } catch (error) {
+    console.error('Logout error:', error)
+    alert('Logout failed: ' + error.error)
+  }
 }
+
+onMounted(async () => {
+  await fetchUserProfile()
+})
 </script>
 
 <style scoped>

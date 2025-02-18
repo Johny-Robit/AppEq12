@@ -27,7 +27,7 @@
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { events, joinedEventIds } from '../events.js'
-import { isLoggedIn, user } from '../auth.js'
+import { isLoggedIn } from '../store/user' // Import isLoggedIn from the user store
 
 const searchQuery = ref('')
 const searchTrigger = ref('')
