@@ -8,10 +8,12 @@
 - [**Logout - COMPLETE**](#logout)
 - [**EditProfile - COMPLETE**](#editprofile-put) (PUT)
 - [**GetProfileInfo - COMPLETE**](#getprofileinfo-get) (GET)
+- [**GetJoinedEventsList - COMPLETE**](#getjoinedeventslist-get) (GET)  
+  - // avoir la liste des évènements que l'utilisateur a rejoint
 
-- [**GetJoinedEventsList**](#getjoinedeventslist-get) (GET)  
+- [**GetUserInvitations**](#geteventinviteslist-get) (GET)
   - // avoir la liste des évènements auxquels l’utilisateur a été invité
-- [**GetEventInvitesList**](#geteventinviteslist-get) (GET)
+
 - [**GetCreatedEventsList**](#getcreatedeventslist-get) (GET)  
   - // avoir la liste des évènements que l’utilisateur a créés
 
@@ -183,7 +185,7 @@ Authorization: Bearer <access_token>
 ]
 ```
 
-### Get Event Invites List (GET) (Authenticated)
+### Get User Invitations  List (GET) (Authenticated)
 
 **Endpoint:** `/api/user/events/invites/`
 

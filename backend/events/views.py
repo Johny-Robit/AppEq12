@@ -145,6 +145,34 @@ class GetJoinedEventsList(APIView):
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class GetUserInvitations(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            pending_invites = Event.objects.filter(pending_invites=request.user)
+
+            serializer = GetEventSerializer(pending_invites, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"GetUserInvitations View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetCreatedEventsList(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            created_events = Event.objects.filter(owner=request.user)
+
+            serializer = GetEventSerializer(created_events, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"GetCreatedEventsList View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class JoinEvent(APIView):
     permission_classes = [IsAuthenticated]
 

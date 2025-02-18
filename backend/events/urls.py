@@ -18,6 +18,8 @@ from .views import (
     GetAttendeeList,
     GetPendingInvites,
     GetJoinedEventsList,
+    GetUserInvitations, 
+    GetCreatedEventsList, 
     RemoveAttendee,
     JoinEvent,
     LeaveEvent,
@@ -42,5 +44,7 @@ urlpatterns = [
     path("event/<int:event_id>/pending_invites/", GetPendingInvites.as_view(), name="pending-invites"),
     path("event/remove_attendee/", RemoveAttendee.as_view(), name="remove-attendee"),
     path("user/events/joined/", GetJoinedEventsList.as_view(), name="joined-events"),
+    path("user/events/invitations/", GetUserInvitations.as_view(), name="user-invitations"),
+    path("user/events/created/", GetCreatedEventsList.as_view(), name="created-events"),
 ]
 
