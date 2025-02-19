@@ -17,6 +17,7 @@ class UserSignup(APIView):
 
     def post(self, request):
         """Creates a new user"""
+        print("Request Data:", request.data)  # Ajout pour voir la requête
         serializer = UserSignupSerializer(data=request.data)
 
         if serializer.is_valid():
