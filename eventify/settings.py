@@ -147,12 +147,12 @@ LOGGING = {
             'backupCount': 3,  
             'formatter': 'verbose',
         },
-        'django_file': {  # TODO DEBUG Nouveau handler pour Django
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': os.path.join(LOG_DIR, 'debug.log'),
-            'formatter': 'verbose',
-        },
+        #'django_file': {  # DEBUG Nouveau handler pour Django
+        #    'level': 'DEBUG',
+        #    'class': 'logging.FileHandler',
+        #    'filename': os.path.join(LOG_DIR, 'debug.log'),
+        #    'formatter': 'verbose',
+        #},
     },
     'loggers': {
         'eventify': {
@@ -165,11 +165,11 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
-        'django': {  # TODO DEBUG Nouveau logger pour Django
-            'handlers': ['console', 'django_file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
+        #'django': {  # DEBUG Nouveau logger pour Django
+        #    'handlers': ['console', 'django_file'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #},
     },
 }
 
