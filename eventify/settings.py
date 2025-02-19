@@ -70,6 +70,9 @@ DATABASES = {
 }
 
 # TODO CORS Headers pour le développement removed
+CSRF_TRUSTED_ORIGINS = ['https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com'] # TODO DEBUG inscrire notre domaine une fois le déploiement sur Heroku
+CORS_ALLOW_ALL_ORIGINS = True # TODO DEBUG à enlever en production
+
 
 
 # Paramètrage pour la validation de passwords

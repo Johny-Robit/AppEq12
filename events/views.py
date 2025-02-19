@@ -25,7 +25,7 @@ class UserSignup(APIView):
         if serializer.is_valid():
             user = serializer.save()
             return Response({"success": "User created successfully", "userid": user.id}, status=status.HTTP_201_CREATED)
-
+        print(serializer.errors)  # TODO DEBUG Ajout pour voir la requête
         error_messages = serializer.errors
 
         if "username" in error_messages or "email" in error_messages:
