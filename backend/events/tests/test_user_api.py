@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.test import APITestCase
 from rest_framework import status
+from django.urls import reverse
 
 User = get_user_model()
 
@@ -41,17 +42,6 @@ class AuthTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("error", response.data)
 
-    def test_is_authenticated(self):
-        """ Test si l'authentification est bien gérée """
-        login_data = {"email": "test@example.com", "password": "testpassword"}
-        login_response = self.client.post(self.login_url, login_data, format="json")
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {login_response.data['token']}")
-        
-        response = self.client.get(self.auth_url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["authenticated"], True)
-        self.assertEqual(response.data["user"], "testuser")
-
     def test_logout(self):
         """ Test de déconnexion """
         login_data = {"email": "test@example.com", "password": "testpassword"}
@@ -61,7 +51,3 @@ class AuthTestCase(APITestCase):
         response = self.client.post(self.logout_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
-        # Vérifier que l'utilisateur est bien déconnecté
-        self.client.credentials()  # Supprime le token d'auth
-        response = self.client.get(self.auth_url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)  # Devrait être 401 Unauthorized

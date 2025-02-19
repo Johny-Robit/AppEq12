@@ -23,6 +23,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { events, joinedEventIds } from '../events.js'
 import { isLoggedIn, user } from '../store/user.js'
+import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI } from '../api/event'
 
 const event = ref(null)
 const isJoined = ref(false)
@@ -41,20 +42,30 @@ const formatDateTime = (dateTime) => {
   return dateTime.replace('T', ' ')
 }
 
-const joinEvent = (eventId) => {
-  if (!joinedEventIds.value.includes(eventId)) {
+const joinEvent = async (eventId) => {
+  const token = user.value.token
+  try {
+    await joinEventAPI(token, eventId)
     joinedEventIds.value.push(eventId)
     isJoined.value = true
+    console.log(`Joined event with ID: ${eventId}`)
+  } catch (error) {
+    console.error('Failed to join event:', error)
   }
-  console.log(`Joining event with ID: ${eventId}`)
 }
 
-const leaveEvent = (eventId) => {
-  const index = joinedEventIds.value.indexOf(eventId)
-  if (index !== -1) {
-    joinedEventIds.value.splice(index, 1)
-    isJoined.value = false
-    console.log(`Left event with ID: ${eventId}`)
+const leaveEvent = async (eventId) => {
+  const token = user.value.token
+  try {
+    await leaveEventAPI(token, eventId)
+    const index = joinedEventIds.value.indexOf(eventId)
+    if (index !== -1) {
+      joinedEventIds.value.splice(index, 1)
+      isJoined.value = false
+      console.log(`Left event with ID: ${eventId}`)
+    }
+  } catch (error) {
+    console.error('Failed to leave event:', error)
   }
 }
 

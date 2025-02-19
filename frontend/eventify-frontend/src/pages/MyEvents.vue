@@ -73,37 +73,45 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../store/user' // Import isLoggedIn from the user store
-import { joinedEventIds, events, eventInvitations } from '../events.js'
+import { isLoggedIn, user } from '../store/user'
+import { getJoinedEventsList, getCreatedEventsList, getEventInvitesList } from '../api/user'
+import { joinEvent as joinEventAPI } from '../api/event'
 
 const router = useRouter()
 const route = useRoute()
 
 const activeTab = ref('joined')
+const joinedEvents = ref([])
+const createdEvents = ref([])
+const eventInvitationsList = ref([])
+const pastEvents = computed(() => {
+  return [...joinedEvents.value, ...createdEvents.value].filter(event => new Date(event.end_datetime) < new Date())
+})
 
-onMounted(() => {
+onMounted(async () => {
   if (!isLoggedIn.value) {
     router.push({ path: '/login', query: { redirect: route.fullPath } })
+  } else {
+    const token = user.value.token
+    try {
+      joinedEvents.value = await getJoinedEventsList(token)
+      createdEvents.value = await getCreatedEventsList(token)
+      eventInvitationsList.value = await getEventInvitesList(token)
+    } catch (error) {
+      console.error('Failed to fetch events:', error)
+    }
   }
 })
 
-const joinedEvents = computed(() => {
-  return events.value.filter(event => joinedEventIds.value.includes(event.id) && new Date(event.endTime) >= new Date())
-})
-
-const createdEvents = computed(() => {
-  return events.value.filter(event => event.createdBy === user.value.username && new Date(event.endTime) >= new Date())
-})
-
-const pastEvents = computed(() => {
-  return events.value.filter(event => new Date(event.endTime) < new Date())
-})
-
-const joinEvent = (eventId) => {
-  if (!joinedEventIds.value.includes(eventId)) {
-    joinedEventIds.value.push(eventId)
+const joinEvent = async (eventId) => {
+  const token = user.value.token
+  try {
+    await joinEventAPI(token, eventId)
+    joinedEvents.value = await getJoinedEventsList(token)
+    console.log(`Joined event with ID: ${eventId}`)
+  } catch (error) {
+    console.error('Failed to join event:', error)
   }
-  console.log(`Joining event with ID: ${eventId}`)
 }
 
 const confirmJoinEvent = (eventId) => {
@@ -112,32 +120,20 @@ const confirmJoinEvent = (eventId) => {
   }
 }
 
-const leaveEvent = (eventId) => {
-  const index = joinedEventIds.value.indexOf(eventId)
-  if (index !== -1) {
-    joinedEventIds.value.splice(index, 1)
-    console.log(`Left event with ID: ${eventId}`)
-  }
+const leaveEvent = async (eventId) => {
+  // ...existing code...
 }
 
 const confirmLeaveEvent = (eventId) => {
-  if (confirm('Are you sure you want to leave this event?')) {
-    leaveEvent(eventId)
-  }
+  // ...existing code...
 }
 
-const deleteEvent = (eventId) => {
-  const index = events.value.findIndex(event => event.id === eventId)
-  if (index !== -1) {
-    events.value.splice(index, 1)
-    console.log(`Deleted event with ID: ${eventId}`)
-  }
+const deleteEvent = async (eventId) => {
+  // ...existing code...
 }
 
 const confirmDeleteEvent = (eventId) => {
-  if (confirm('Are you sure you want to delete this event?')) {
-    deleteEvent(eventId)
-  }
+  // ...existing code...
 }
 
 const editEvent = (eventId) => {
@@ -148,10 +144,6 @@ const inviteSomeone = (eventId) => {
   console.log(`Inviting someone to event with ID: ${eventId}`)
   // Add logic to invite someone to the event
 }
-
-const eventInvitationsList = computed(() => {
-  return events.value.filter(event => eventInvitations.value.includes(event.id))
-})
 
 const formatDateTime = (dateTime) => {
   return dateTime.replace('T', ' ')

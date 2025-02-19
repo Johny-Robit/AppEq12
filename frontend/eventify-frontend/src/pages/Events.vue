@@ -27,7 +27,8 @@
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { events, joinedEventIds } from '../events.js'
-import { isLoggedIn } from '../store/user' // Import isLoggedIn from the user store
+import { isLoggedIn, user } from '../store/user'
+import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI } from '../api/event'
 
 const searchQuery = ref('')
 const searchTrigger = ref('')
@@ -50,11 +51,15 @@ const clearSearch = () => {
   searchTrigger.value = ''
 }
 
-const joinEvent = (eventId) => {
-  if (!joinedEventIds.value.includes(eventId)) {
+const joinEvent = async (eventId) => {
+  const token = user.value.token
+  try {
+    await joinEventAPI(token, eventId)
     joinedEventIds.value.push(eventId)
+    console.log(`Joined event with ID: ${eventId}`)
+  } catch (error) {
+    console.error('Failed to join event:', error)
   }
-  console.log(`Joining event with ID: ${eventId}`)
 }
 
 const confirmJoinEvent = (eventId) => {
@@ -63,17 +68,17 @@ const confirmJoinEvent = (eventId) => {
   }
 }
 
-const leaveEvent = (eventId) => {
-  const index = joinedEventIds.value.indexOf(eventId)
-  if (index !== -1) {
-    joinedEventIds.value.splice(index, 1)
-    console.log(`Left event with ID: ${eventId}`)
-  }
-}
-
-const confirmLeaveEvent = (eventId) => {
-  if (confirm('Are you sure you want to leave this event?')) {
-    leaveEvent(eventId)
+const leaveEvent = async (eventId) => {
+  const token = user.value.token
+  try {
+    await leaveEventAPI(token, eventId)
+    const index = joinedEventIds.value.indexOf(eventId)
+    if (index !== -1) {
+      joinedEventIds.value.splice(index, 1)
+      console.log(`Left event with ID: ${eventId}`)
+    }
+  } catch (error) {
+    console.error('Failed to leave event:', error)
   }
 }
 

@@ -79,11 +79,10 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-
-
 class EventSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField(source="event_is_public")
     event_id = serializers.IntegerField(read_only=True)
+    event_image_link = serializers.CharField(allow_blank=True, required=False, allow_null=True)
 
     class Meta:
         model = Event
@@ -96,16 +95,30 @@ class EventSerializer(serializers.ModelSerializer):
         """
         Vérifie que l'URL de l'image est valide.
         """
-        url_pattern = re.compile(
-            r'^(https?:\/\/)?'  # http:// ou https:// (optionnel)
-            r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}'  # Nom de domaine
-            r'(:\d+)?(\/.*)?$'  # Port optionnel et chemin
-        )
+        if value:
+            url_pattern = re.compile(
+                r'^(https?:\/\/)?'  # http:// ou https:// (optionnel)
+                r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}'  # Nom de domaine
+                r'(:\d+)?(\/.*)?$'  # Port optionnel et chemin
+            )
 
-        if not url_pattern.match(value):
-            raise serializers.ValidationError("L'URL fournie n'est pas valide.")
+            if not url_pattern.match(value):
+                raise serializers.ValidationError("L'URL fournie n'est pas valide.")
 
         return value
     
+class GetEventSerializer(serializers.ModelSerializer):
+    ownerID = serializers.IntegerField(source="owner.id", read_only=True)
+    is_public = serializers.BooleanField(source="event_is_public")
 
+    class Meta:
+        model = Event
+        fields = [
+            "ownerID", "event_name", "event_address", "start_datetime",
+            "end_datetime", "description", "is_public", "event_id"
+        ]
 
+class AttendeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id"]
