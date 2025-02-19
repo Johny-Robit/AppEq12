@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import AccessToken, Event
 from django.contrib.auth import get_user_model
-from rest_framework.parsers import JSONParser # TODO DEBUG Ajout pour voir la requête
 
 from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer, EventSerializer, GetEventSerializer, AttendeeSerializer
 import logging
@@ -15,17 +14,15 @@ logger = logging.getLogger("eventify")
 
 class UserSignup(APIView):
     permission_classes = [AllowAny]
-    parser_classes = [JSONParser] # TODO DEBUG Ajout pour voir la requête
 
     def post(self, request):
         """Creates a new user"""
-        print("Request Data:", request.data)  # TODO DEBUG Ajout pour voir la requête
         serializer = UserSignupSerializer(data=request.data)
 
         if serializer.is_valid():
             user = serializer.save()
             return Response({"success": "User created successfully", "userid": user.id}, status=status.HTTP_201_CREATED)
-        print(serializer.errors)  # TODO DEBUG Ajout pour voir la requête
+
         error_messages = serializer.errors
 
         if "username" in error_messages or "email" in error_messages:
