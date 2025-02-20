@@ -8,6 +8,7 @@
 - [**Logout**](#logout-post-authenticated)
 - [**EditProfile**](#edit-profile-put-authenticated) (PUT)
 - [**GetProfileInfo**](#get-profile-info-get-authenticated) (GET)
+- [**GetAllUsers**](#get-all-users-get-authenticated) (GET)
 - [**GetJoinedEventsList**](#get-joined-events-list-get-authenticated) (GET)  
   - // avoir la liste des évènements que l'utilisateur a rejoint
 - [**GetUserInvitations**](#get-user-invitations-list-get-authenticated) (GET)
@@ -23,6 +24,7 @@
 - [**CreateEvent**](#create-event-post-authenticated) (POST)
 - [**EditEvent**](#edit-event-put-authenticated-owner-only) (PUT) [Autorisation]
 - [**DeleteEvent**](#delete-event-delete-authenticated-owner-only) (DELETE) [Autorisation]
+- [**GetAllEvents**](#get-all-events-get-public) (GET) (Public)
 - [**GetEventInformations**](#get-event-information-get-public) (GET) (Public)
 - [**GetAttendeesList**](#get-attendees-list-get-authenticated) (GET)  
   - // avoir la liste des personnes qui ont confirmé leur présence
@@ -170,6 +172,24 @@ Authorization: Bearer <access_token>
 - **404 Not Found** (Si utilisateur non trouvé)
 
 ---
+
+### Get All Users (GET) (Authenticated)
+
+**Endpoint:** `/api/user/all/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+```json
+[
+  {
+    "username": "string"
+  }
+]
+```
 
 ### Get Joined Events List (GET) (Authenticated)
 
@@ -445,6 +465,29 @@ Authorization: Bearer <access_token>
 ```
 
 ---
+
+### Get All Events (GET) (Public)
+
+**Endpoint:** `/api/event/all/`
+
+- **200 OK**
+
+**Response:**
+
+```json
+[
+  {
+    "event_id": "integer",
+    "ownerID": "integer",
+    "event_name": "string",
+    "event_address": "string",
+    "start_datetime": "string",
+    "end_datetime": "string",
+    "description": "string",
+  }
+]
+```
+
 
 ### Get Event Information (GET) (Public)
 
