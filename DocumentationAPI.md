@@ -186,6 +186,7 @@ Authorization: Bearer <access_token>
 ```json
 [
   {
+    "user_id": "integer",
     "username": "string"
   }
 ]
@@ -251,6 +252,7 @@ Authorization: Bearer <access_token>
 ```
 
 **Response:**
+
 ```json
 [
   {
