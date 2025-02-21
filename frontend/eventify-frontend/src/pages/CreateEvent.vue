@@ -36,10 +36,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
-import { events } from '../events.js'
+import { isLoggedIn } from '../store/user'
+import { createEvent as createEventAPI } from '../api/event'
 
 const name = ref('')
 const address = ref('')
@@ -47,7 +47,10 @@ const dateTime = ref('')
 const endTime = ref('')
 const description = ref('')
 const isPrivate = ref(false)
+const eventImageLink = ref('')
 const errorMessage = ref('')
+
+const isPublic = computed(() => !isPrivate.value)
 
 const router = useRouter()
 const route = useRoute()
@@ -58,26 +61,30 @@ onMounted(() => {
   }
 })
 
-const createEvent = () => {
+const createEvent = async () => {
   if (new Date(endTime.value) <= new Date(dateTime.value)) {
     errorMessage.value = 'End date and time must be later than start date and time.'
     return
   }
 
   const newEvent = {
-    id: events.value.length + 1,
-    name: name.value,
-    address: address.value,
-    dateTime: dateTime.value,
-    endTime: endTime.value,
-    attendees: 0,
+    event_name: name.value,
+    event_address: address.value,
+    start_datetime: dateTime.value,
+    end_datetime: endTime.value,
     description: description.value,
-    createdBy: user.value.username,
-    isPrivate: isPrivate.value,
+    is_public: isPublic.value,
+    event_image_link: eventImageLink.value || ''
   }
-  events.value.push(newEvent)
-  console.log('Event created:', newEvent)
-  router.push('/events')
+
+  const token = localStorage.getItem('token')
+  try {
+    await createEventAPI(token, newEvent)
+    router.push('/events')
+  } catch (error) {
+    errorMessage.value = 'Failed to create event: ' + error.message
+    console.error('Failed to create event:', error)
+  }
 }
 
 const confirmCreateEvent = () => {

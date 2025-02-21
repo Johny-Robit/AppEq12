@@ -1,26 +1,30 @@
 <template>
-  <div class="edit-event-container">
+  <div class="edit-event-container" v-if="event">
     <h1>Edit Event</h1>
     <form @submit.prevent="confirmUpdateEvent">
       <div class="form-group">
         <label for="name">Event Name:</label>
-        <input type="text" v-model="name" required />
+        <input type="text" v-model="event.event_name" required />
       </div>
       <div class="form-group">
         <label for="address">Address:</label>
-        <input type="text" v-model="address" required />
+        <input type="text" v-model="event.event_address" required />
       </div>
       <div class="form-group">
-        <label for="dateTime">Date & Time:</label>
-        <input type="datetime-local" v-model="dateTime" required />
+        <label for="start_datetime">Start Date & Time:</label>
+        <input type="datetime-local" v-model="event.start_datetime" required />
       </div>
       <div class="form-group">
-        <label for="endTime">End Time:</label>
-        <input type="datetime-local" v-model="endTime" required />
+        <label for="end_datetime">End Date & Time:</label>
+        <input type="datetime-local" v-model="event.end_datetime" required />
       </div>
       <div class="form-group">
         <label for="description">Description:</label>
-        <textarea v-model="description" required></textarea>
+        <textarea v-model="event.description" required></textarea>
+      </div>
+      <div class="form-group">
+        <label for="is_public">Event Visibility:</label>
+        <input type="checkbox" v-model="event.is_public" /> Public
       </div>
       <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
       <button type="submit">Update Event</button>
@@ -31,47 +35,47 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { events } from '../events.js'
+import { getEventInformation, editEvent as editEventAPI } from '../api/event'
+import { isLoggedIn } from '../store/user'
 
-const name = ref('')
-const address = ref('')
-const dateTime = ref('')
-const endTime = ref('')
-const description = ref('')
+const event = ref(null)
 const errorMessage = ref('')
 
 const router = useRouter()
 const route = useRoute()
 const eventId = route.params.id
 
-onMounted(() => {
-  const event = events.value.find(event => event.id === parseInt(eventId))
-  if (event) {
-    name.value = event.name
-    address.value = event.address
-    dateTime.value = event.dateTime
-    endTime.value = event.endTime
-    description.value = event.description
-  } else {
+const fetchEvent = async () => {
+  try {
+    const response = await getEventInformation(eventId)
+    event.value = response
+  } catch (error) {
+    console.error('Failed to fetch event information:', error)
     router.push('/my-events')
+  }
+}
+
+onMounted(() => {
+  if (!isLoggedIn.value) {
+    router.push('/login')
+  } else {
+    fetchEvent()
   }
 })
 
-const updateEvent = () => {
-  if (new Date(endTime.value) <= new Date(dateTime.value)) {
+const updateEvent = async () => {
+  if (new Date(event.value.end_datetime) <= new Date(event.value.start_datetime)) {
     errorMessage.value = 'End date and time must be later than start date and time.'
     return
   }
 
-  const event = events.value.find(event => event.id === parseInt(eventId))
-  if (event) {
-    event.name = name.value
-    event.address = address.value
-    event.dateTime = dateTime.value
-    event.endTime = endTime.value
-    event.description = description.value
-    console.log('Event updated:', event)
+  try {
+    const token = localStorage.getItem('token')
+    await editEventAPI(token, event.value)
     router.push('/my-events')
+  } catch (error) {
+    console.error('Failed to update event:', error)
+    errorMessage.value = 'Failed to update event. Please try again.'
   }
 }
 
@@ -105,7 +109,7 @@ label {
   margin-bottom: 0.5em;
 }
 
-input, textarea {
+input, textarea, select {
   padding: 0.5em;
   border: 1px solid #ccc;
   border-radius: 4px;

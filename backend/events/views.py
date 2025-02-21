@@ -326,10 +326,11 @@ class CreateEvent(APIView):
                 event = serializer.save(owner=request.user)
                 return Response({"message": "Event created successfully", "event_id": event.event_id}, status=status.HTTP_201_CREATED)
             
-            return Response({"error": "Invalid input data"}, status=status.HTTP_400_BAD_REQUEST)
+            logger.error(f"CreateEvent validation failed: {serializer.errors}")
+            return Response({"error": "Invalid input data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            logger.error(f"GetProfile View failed: {e}")
+            logger.error(f"CreateEvent View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

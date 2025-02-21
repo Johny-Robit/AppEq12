@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = '/api/event';
+const API_URL = 'http://localhost:8000/api/event'; // Ensure this points to the backend server address
 
 export const joinEvent = async (token, eventId) => {
   try {
@@ -105,6 +105,15 @@ export const getPendingInvites = async (token, eventId) => {
     const response = await axios.get(`${API_URL}/${eventId}/pending_invites/`, {
       headers: { Authorization: `Bearer ${token}` }
     });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const getAllEvents = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/all/`);
     return response.data;
   } catch (error) {
     throw error.response.data;

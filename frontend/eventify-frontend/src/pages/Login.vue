@@ -13,16 +13,14 @@
       <button type="submit">Login</button>
     </form>
     <p>Don't have an account? <RouterLink to="/signup">Sign up here</RouterLink></p>
-    <form @submit.prevent="temporaryLogin" v-if="!isLoggedIn">
-      <button type="submit">Temporary Login</button>
-    </form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { RouterLink, useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
+import { login as loginAPI } from '../api/user' // Import the login API function
+import { isLoggedIn, fetchUserProfile } from '../store/user' // Import isLoggedIn and fetchUserProfile from the user store
 
 const email = ref('')
 const password = ref('')
@@ -30,22 +28,23 @@ const password = ref('')
 const router = useRouter()
 const route = useRoute()
 
-const login = () => {
-  if (email.value === user.value.email && password.value === user.value.password) {
-    console.log('Logging in with', email.value, password.value)
+const login = async () => {
+  try {
+    const credentials = {
+      email: email.value,
+      password: password.value
+    }
+    const response = await loginAPI(credentials)
+    // Save the token and redirect to the desired page
+    localStorage.setItem('token', response.token)
     isLoggedIn.value = true
+    await fetchUserProfile()
     const redirectTo = route.query.redirect || '/'
     router.push(redirectTo)
-  } else {
-    console.log('Invalid email or password')
+  } catch (error) {
+    console.error('Login error:', error)
+    alert('Login failed: ' + error.error)
   }
-}
-
-const temporaryLogin = () => {
-  isLoggedIn.value = true
-  console.log('Logged in:', isLoggedIn.value)
-  const redirectTo = route.query.redirect || '/'
-  router.push(redirectTo)
 }
 </script>
 

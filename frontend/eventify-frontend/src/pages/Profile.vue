@@ -1,22 +1,24 @@
 <template>
   <div class="profile-container">
     <h1>Profile</h1>
-    <p><strong>Name:</strong> {{ user.username }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <RouterLink to="/edit-profile" class="button">Edit Profile</RouterLink>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Description:</strong> {{ user.description }}</p>
+    <RouterLink to="/edit-profile" class="button">Edit description</RouterLink>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
+import { isLoggedIn, user, fetchUserProfile } from '../store/user' // Import the user store
 
 const router = useRouter()
 
-onMounted(() => {
+onMounted(async () => {
   if (!isLoggedIn.value) {
     router.push({ path: '/login', query: { redirect: '/profile' } })
+  } else {
+    await fetchUserProfile()
   }
 })
 </script>

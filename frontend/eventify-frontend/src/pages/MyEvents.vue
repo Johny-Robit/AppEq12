@@ -10,30 +10,31 @@
     <div class="events-container">
       <div v-if="activeTab === 'joined'" class="joined-events">
         <div v-if="joinedEvents.length">
-          <div v-for="event in joinedEvents" :key="event.id" class="event">
-            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
-            <p><strong>Address:</strong> {{ event.address }}</p>
-            <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
-            <p><strong>Created by:</strong> {{ event.createdBy }}</p>
+          <div v-for="event in joinedEvents" :key="event.event_id" class="event">
+            <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
+            <p><strong>Address:</strong> {{ event.event_address }}</p>
+            <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
+            <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
-            <button @click="confirmLeaveEvent(event.id)">Leave Event</button>
+            <button @click="confirmLeaveEvent(event.event_id)">Leave Event</button>
+            <button @click="inviteSomeone(event.event_id)">Invite Someone</button>
           </div>
         </div>
         <p v-else>You have not joined any events yet.</p>
       </div>
       <div v-if="activeTab === 'created'" class="created-events">
         <div v-if="createdEvents.length">
-          <div v-for="event in createdEvents" :key="event.id" class="event">
-            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
-            <p><strong>Address:</strong> {{ event.address }}</p>
-            <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
-            <p><strong>Created by:</strong> {{ event.createdBy }}</p>
+          <div v-for="event in createdEvents" :key="event.event_id" class="event">
+            <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
+            <p><strong>Address:</strong> {{ event.event_address }}</p>
+            <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
+            <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
-            <button @click="inviteSomeone(event.id)">Invite Someone</button>
-            <button @click="editEvent(event.id)">Edit</button>
-            <button @click="confirmDeleteEvent(event.id)">Delete</button>
+            <button @click="editEvent(event.event_id)">Edit</button>
+            <button @click="confirmDeleteEvent(event.event_id)">Delete</button>
+            <button @click="inviteSomeone(event.event_id)">Invite Someone</button>
           </div>
         </div>
         <p v-else>You have not created any events yet.</p>
@@ -41,69 +42,105 @@
       </div>
       <div v-if="activeTab === 'invitations'" class="event-invitations">
         <div v-if="eventInvitationsList.length">
-          <div v-for="event in eventInvitationsList" :key="event.id" class="event">
-            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
-            <p><strong>Address:</strong> {{ event.address }}</p>
-            <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
-            <p><strong>Created by:</strong> {{ event.createdBy }}</p>
+          <div v-for="event in eventInvitationsList" :key="event.event_id" class="event">
+            <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
+            <p><strong>Address:</strong> {{ event.event_address }}</p>
+            <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
+            <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
-            <button @click="confirmJoinEvent(event.id)">Join Event</button>
+            <button @click="confirmJoinEvent(event.event_id)">Join Event</button>
           </div>
         </div>
         <p v-else>You have no event invitations.</p>
       </div>
       <div v-if="activeTab === 'past'" class="past-events">
         <div v-if="pastEvents.length">
-          <div v-for="event in pastEvents" :key="event.id" class="event">
-            <h3 @click="goToEvent(event.id)" class="event-name">{{ event.name }}</h3>
-            <p><strong>Address:</strong> {{ event.address }}</p>
-            <p><strong>Date & Time:</strong> {{ formatDateTime(event.dateTime) }} - {{ formatDateTime(event.endTime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
-            <p><strong>Created by:</strong> {{ event.createdBy }}</p>
+          <div v-for="event in pastEvents" :key="event.event_id" class="event">
+            <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
+            <p><strong>Address:</strong> {{ event.event_address }}</p>
+            <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
+            <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
           </div>
         </div>
         <p v-else>You have no past events.</p>
       </div>
     </div>
+    <InvitePopup :visible="isPopupVisible" :users="users" :eventId="Number(selectedEventId)" @close="isPopupVisible = false" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../auth.js'
-import { joinedEventIds, events, eventInvitations } from '../events.js'
+import { isLoggedIn, user } from '../store/user'
+import { getJoinedEventsList, getCreatedEventsList, getEventInvitesList, getAllUsers } from '../api/user'
+import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI, getAttendeesList } from '../api/event'
+import InvitePopup from '../components/InvitePopup.vue'
 
 const router = useRouter()
 const route = useRoute()
 
-const activeTab = ref('joined')
+const activeTab = ref('joined') // Set default active tab to 'joined'
+const joinedEvents = ref([])
+const createdEvents = ref([])
+const eventInvitationsList = ref([])
+const users = ref([]) // Define users
+const pastEvents = computed(() => {
+  return [...joinedEvents.value, ...createdEvents.value].filter(event => new Date(event.end_datetime) < new Date())
+})
 
-onMounted(() => {
+const isPopupVisible = ref(false)
+const selectedEventId = ref(null)
+
+const initializeEvents = async (events) => {
+  for (const event of events) {
+    try {
+      const token = localStorage.getItem('token')
+      const attendees = await getAttendeesList(token, event.event_id)
+      event.attendeesCount = attendees.length
+    } catch (error) {
+      console.error('Failed to fetch attendees:', error)
+      event.attendeesCount = 0
+    }
+  }
+}
+
+onMounted(async () => {
   if (!isLoggedIn.value) {
     router.push({ path: '/login', query: { redirect: route.fullPath } })
+  } else {
+    try {
+      const token = localStorage.getItem('token')
+      joinedEvents.value = await getJoinedEventsList(token)
+      createdEvents.value = await getCreatedEventsList(token)
+      eventInvitationsList.value = await getEventInvitesList(token)
+      users.value = await getAllUsers(token)
+      await initializeEvents(joinedEvents.value)
+      await initializeEvents(createdEvents.value)
+      await initializeEvents(eventInvitationsList.value)
+    } catch (error) {
+      console.error('Failed to fetch events:', error)
+    }
   }
 })
 
-const joinedEvents = computed(() => {
-  return events.value.filter(event => joinedEventIds.value.includes(event.id) && new Date(event.endTime) >= new Date())
-})
+const getUsername = (userId) => {
+  const user = users.value.find(user => user.user_id === userId)
+  return user ? user.username : 'Unknown'
+}
 
-const createdEvents = computed(() => {
-  return events.value.filter(event => event.createdBy === user.value.username && new Date(event.endTime) >= new Date())
-})
-
-const pastEvents = computed(() => {
-  return events.value.filter(event => new Date(event.endTime) < new Date())
-})
-
-const joinEvent = (eventId) => {
-  if (!joinedEventIds.value.includes(eventId)) {
-    joinedEventIds.value.push(eventId)
+const joinEvent = async (eventId) => {
+  try {
+    const token = localStorage.getItem('token')
+    await joinEventAPI(token, eventId)
+    joinedEvents.value = await getJoinedEventsList(token)
+    await initializeEvents(joinedEvents.value)
+  } catch (error) {
+    console.error('Failed to join event:', error)
   }
-  console.log(`Joining event with ID: ${eventId}`)
 }
 
 const confirmJoinEvent = (eventId) => {
@@ -112,11 +149,14 @@ const confirmJoinEvent = (eventId) => {
   }
 }
 
-const leaveEvent = (eventId) => {
-  const index = joinedEventIds.value.indexOf(eventId)
-  if (index !== -1) {
-    joinedEventIds.value.splice(index, 1)
-    console.log(`Left event with ID: ${eventId}`)
+const leaveEvent = async (eventId) => {
+  try {
+    const token = localStorage.getItem('token')
+    await leaveEventAPI(token, eventId)
+    joinedEvents.value = await getJoinedEventsList(token)
+    await initializeEvents(joinedEvents.value)
+  } catch (error) {
+    console.error('Failed to leave event:', error)
   }
 }
 
@@ -126,11 +166,14 @@ const confirmLeaveEvent = (eventId) => {
   }
 }
 
-const deleteEvent = (eventId) => {
-  const index = events.value.findIndex(event => event.id === eventId)
-  if (index !== -1) {
-    events.value.splice(index, 1)
-    console.log(`Deleted event with ID: ${eventId}`)
+const deleteEvent = async (eventId) => {
+  try {
+    const token = localStorage.getItem('token')
+    await deleteEventAPI(token, eventId)
+    createdEvents.value = await getCreatedEventsList(token)
+    await initializeEvents(createdEvents.value)
+  } catch (error) {
+    console.error('Failed to delete event:', error)
   }
 }
 
@@ -145,15 +188,12 @@ const editEvent = (eventId) => {
 }
 
 const inviteSomeone = (eventId) => {
-  console.log(`Inviting someone to event with ID: ${eventId}`)
-  // Add logic to invite someone to the event
+  selectedEventId.value = Number(eventId) // Ensure selectedEventId is a number
+  isPopupVisible.value = true
 }
 
-const eventInvitationsList = computed(() => {
-  return events.value.filter(event => eventInvitations.value.includes(event.id))
-})
-
 const formatDateTime = (dateTime) => {
+  if (!dateTime) return 'N/A';
   return dateTime.replace('T', ' ')
 }
 
