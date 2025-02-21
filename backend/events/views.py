@@ -5,7 +5,7 @@ from rest_framework import status
 from .models import AccessToken, Event
 from django.contrib.auth import get_user_model
 
-from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer, EventSerializer, GetEventSerializer, AttendeeSerializer
+from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer, EventSerializer, GetEventSerializer, AttendeeSerializer, GetAllUsersSerializer
 import logging
 
 User = get_user_model()
@@ -99,6 +99,20 @@ class EditProfile(APIView):
 
         except Exception as e:
             logger.error(f"EditProfile View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetAllUsers(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        """Permet à l'utilisateur de récupérer la liste de tous les utilisateurs"""
+        try:
+            users = User.objects.all()
+            serializer = GetAllUsersSerializer(users, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"GetAllUsers View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -365,6 +379,19 @@ class DeleteEvent(APIView):
             logger.error(f"DeleteEvent View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+class GetAllEvents(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            events = Event.objects.filter(event_is_public=True)
+            serializer = GetEventSerializer(events, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.error(f"GetAllEvents View failed: {e}")
+            return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class GetEventView(APIView):
     permission_classes = [AllowAny]

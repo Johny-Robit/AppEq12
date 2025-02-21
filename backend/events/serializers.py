@@ -78,6 +78,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.profile_image_link = validated_data.get('profile_image_link', instance.profile_image_link)
         instance.save()
         return instance
+
+class GetAllUsersSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(source='id')
+    username = serializers.CharField()
+
+    class Meta:
+        model = User
+        fields = ['user_id', 'username']
     
 class EventSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField(source="event_is_public")
