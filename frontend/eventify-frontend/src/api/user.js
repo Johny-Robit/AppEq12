@@ -70,7 +70,7 @@ export const getJoinedEventsList = async (token) => {
 
 export const getEventInvitesList = async (token) => {
   try {
-    const response = await axios.get(`${API_URL}/events/invites/`, {
+    const response = await axios.get(`${API_URL}/events/invitations/`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;
@@ -82,6 +82,17 @@ export const getEventInvitesList = async (token) => {
 export const getCreatedEventsList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/created/`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};
+
+export const getAllUsers = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/all/`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     return response.data;

@@ -44,7 +44,6 @@ export default {
           description: this.form.description
         }
         await editProfile(token, profileData)
-        console.log('Profile updated successfully')
         await fetchUserProfile()
         this.$router.push('/profile')
       } catch (error) {

@@ -35,11 +35,10 @@ const login = async () => {
       password: password.value
     }
     const response = await loginAPI(credentials)
-    console.log('Login successful:', response)
     // Save the token and redirect to the desired page
     localStorage.setItem('token', response.token)
     isLoggedIn.value = true
-    await fetchUserProfile() // Fetch user profile after successful login
+    await fetchUserProfile()
     const redirectTo = route.query.redirect || '/'
     router.push(redirectTo)
   } catch (error) {

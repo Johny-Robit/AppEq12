@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { isLoggedIn, user, fetchUserProfile } from '../store/user' // Import the user store
 import { logout as logoutAPI } from '../api/user' // Import the logout API function
@@ -51,8 +51,13 @@ const logout = async () => {
   }
 }
 
+watch(isLoggedIn, (newVal) => {
+  console.log('isLoggedIn in NavBar changed:', newVal)
+})
+
 onMounted(async () => {
   await fetchUserProfile()
+  console.log('isLoggedIn onMounted:', isLoggedIn.value)
 })
 </script>
 

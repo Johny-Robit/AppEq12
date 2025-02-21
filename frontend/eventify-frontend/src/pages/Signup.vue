@@ -48,7 +48,6 @@ const signup = async () => {
       password: password.value
     }
     const response = await signupAPI(userData)
-    console.log('Signup successful:', response)
     // Redirect to login page after successful signup
     router.push('/login')
   } catch (error) {

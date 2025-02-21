@@ -80,7 +80,6 @@ const createEvent = async () => {
   const token = localStorage.getItem('token')
   try {
     await createEventAPI(token, newEvent)
-    console.log('Event created:', newEvent)
     router.push('/events')
   } catch (error) {
     errorMessage.value = 'Failed to create event: ' + error.message

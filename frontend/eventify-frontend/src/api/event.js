@@ -110,3 +110,12 @@ export const getPendingInvites = async (token, eventId) => {
     throw error.response.data;
   }
 };
+
+export const getAllEvents = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/all/`);
+    return response.data;
+  } catch (error) {
+    throw error.response.data;
+  }
+};

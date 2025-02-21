@@ -9,7 +9,6 @@
 <script setup>
 import { isLoggedIn } from '../store/user'
 
-console.log('isLoggedIn:', isLoggedIn.value)
 </script>
 
 <style scoped>
