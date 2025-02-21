@@ -68,6 +68,7 @@
         <p v-else>You have no past events.</p>
       </div>
     </div>
+    <InvitePopup :visible="isPopupVisible" :users="users" :eventId="selectedEventId" @close="isPopupVisible = false" />
   </div>
 </template>
 
@@ -77,6 +78,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { isLoggedIn, user } from '../store/user'
 import { getJoinedEventsList, getCreatedEventsList, getEventInvitesList, getAllUsers } from '../api/user'
 import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI } from '../api/event'
+import InvitePopup from '../components/InvitePopup.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -89,6 +91,9 @@ const users = ref([]) // Define users
 const pastEvents = computed(() => {
   return [...joinedEvents.value, ...createdEvents.value].filter(event => new Date(event.end_datetime) < new Date())
 })
+
+const isPopupVisible = ref(false)
+const selectedEventId = ref(null)
 
 onMounted(async () => {
   if (!isLoggedIn.value) {
@@ -164,7 +169,8 @@ const editEvent = (eventId) => {
 }
 
 const inviteSomeone = (eventId) => {
-  // Add logic to invite someone to the event
+  selectedEventId.value = eventId
+  isPopupVisible.value = true
 }
 
 const formatDateTime = (dateTime) => {

@@ -17,6 +17,7 @@
       <button @click="inviteSomeone(event.event_id)">Invite Someone</button>
     </div>
   </div>
+  <InvitePopup :visible="isPopupVisible" :users="users" :eventId="eventId" @close="isPopupVisible = false" />
 </template>
 
 <script setup>
@@ -26,6 +27,7 @@ import { getEventInformation, deleteEvent as deleteEventAPI } from '../api/event
 import { getAllUsers, getCreatedEventsList, getJoinedEventsList } from '../api/user' // Import getJoinedEventsList
 import { isLoggedIn, user } from '../store/user'
 import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI } from '../api/event'
+import InvitePopup from '../components/InvitePopup.vue'
 
 const event = ref(null)
 const isJoined = ref(false)
@@ -33,6 +35,7 @@ const isCreator = ref(false)
 const users = ref([]) // Define users
 const joinedEventIds = ref([]) // Define joinedEventIds
 const createdEventIds = ref([]) // Define createdEventIds
+const isPopupVisible = ref(false)
 const router = useRouter()
 const route = useRoute()
 const eventId = route.params.id
@@ -142,7 +145,7 @@ const confirmDeleteEvent = (eventId) => {
 }
 
 const inviteSomeone = (eventId) => {
-  // Add logic to invite someone to the event
+  isPopupVisible.value = true
 }
 </script>
 
