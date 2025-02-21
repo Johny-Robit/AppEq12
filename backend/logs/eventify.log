@@ -16,3 +16,4 @@ ERROR 2025-02-19 17:11:23,700 views CreateEvent View failed: expected string or 
 ERROR 2025-02-19 17:12:04,717 views CreateEvent View failed: expected string or bytes-like object
 ERROR 2025-02-19 17:13:30,045 views CreateEvent View failed: expected string or bytes-like object
 ERROR 2025-02-19 17:15:18,969 views CreateEvent validation failed: {'event_image_link': [ErrorDetail(string='This field may not be null.', code='null')]}
+ERROR 2025-02-21 14:00:51,876 views AttendeeList failed: Field name `user_id` is not valid for model `CustomUser` in `events.serializers.AttendeeSerializer`.

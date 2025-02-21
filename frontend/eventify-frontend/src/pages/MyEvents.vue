@@ -14,7 +14,7 @@
             <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
             <p><strong>Address:</strong> {{ event.event_address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
             <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
             <button @click="confirmLeaveEvent(event.event_id)">Leave Event</button>
@@ -29,7 +29,7 @@
             <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
             <p><strong>Address:</strong> {{ event.event_address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
             <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
             <button @click="editEvent(event.event_id)">Edit</button>
@@ -46,7 +46,7 @@
             <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
             <p><strong>Address:</strong> {{ event.event_address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
             <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
             <button @click="confirmJoinEvent(event.event_id)">Join Event</button>
@@ -60,7 +60,7 @@
             <h3 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h3>
             <p><strong>Address:</strong> {{ event.event_address }}</p>
             <p><strong>Date & Time:</strong> {{ formatDateTime(event.start_datetime) }} - {{ formatDateTime(event.end_datetime) }}</p>
-            <p><strong>Attendees:</strong> {{ event.attendees }}</p>
+            <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
             <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
             <p>{{ event.description }}</p>
           </div>
@@ -68,7 +68,7 @@
         <p v-else>You have no past events.</p>
       </div>
     </div>
-    <InvitePopup :visible="isPopupVisible" :users="users" :eventId="selectedEventId" @close="isPopupVisible = false" />
+    <InvitePopup :visible="isPopupVisible" :users="users" :eventId="Number(selectedEventId)" @close="isPopupVisible = false" />
   </div>
 </template>
 
@@ -77,7 +77,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { isLoggedIn, user } from '../store/user'
 import { getJoinedEventsList, getCreatedEventsList, getEventInvitesList, getAllUsers } from '../api/user'
-import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI } from '../api/event'
+import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI, getAttendeesList } from '../api/event'
 import InvitePopup from '../components/InvitePopup.vue'
 
 const router = useRouter()
@@ -95,6 +95,19 @@ const pastEvents = computed(() => {
 const isPopupVisible = ref(false)
 const selectedEventId = ref(null)
 
+const initializeEvents = async (events) => {
+  for (const event of events) {
+    try {
+      const token = localStorage.getItem('token')
+      const attendees = await getAttendeesList(token, event.event_id)
+      event.attendeesCount = attendees.length
+    } catch (error) {
+      console.error('Failed to fetch attendees:', error)
+      event.attendeesCount = 0
+    }
+  }
+}
+
 onMounted(async () => {
   if (!isLoggedIn.value) {
     router.push({ path: '/login', query: { redirect: route.fullPath } })
@@ -105,6 +118,9 @@ onMounted(async () => {
       createdEvents.value = await getCreatedEventsList(token)
       eventInvitationsList.value = await getEventInvitesList(token)
       users.value = await getAllUsers(token)
+      await initializeEvents(joinedEvents.value)
+      await initializeEvents(createdEvents.value)
+      await initializeEvents(eventInvitationsList.value)
     } catch (error) {
       console.error('Failed to fetch events:', error)
     }
@@ -121,6 +137,7 @@ const joinEvent = async (eventId) => {
     const token = localStorage.getItem('token')
     await joinEventAPI(token, eventId)
     joinedEvents.value = await getJoinedEventsList(token)
+    await initializeEvents(joinedEvents.value)
   } catch (error) {
     console.error('Failed to join event:', error)
   }
@@ -137,6 +154,7 @@ const leaveEvent = async (eventId) => {
     const token = localStorage.getItem('token')
     await leaveEventAPI(token, eventId)
     joinedEvents.value = await getJoinedEventsList(token)
+    await initializeEvents(joinedEvents.value)
   } catch (error) {
     console.error('Failed to leave event:', error)
   }
@@ -153,6 +171,7 @@ const deleteEvent = async (eventId) => {
     const token = localStorage.getItem('token')
     await deleteEventAPI(token, eventId)
     createdEvents.value = await getCreatedEventsList(token)
+    await initializeEvents(createdEvents.value)
   } catch (error) {
     console.error('Failed to delete event:', error)
   }
@@ -169,7 +188,7 @@ const editEvent = (eventId) => {
 }
 
 const inviteSomeone = (eventId) => {
-  selectedEventId.value = eventId
+  selectedEventId.value = Number(eventId) // Ensure selectedEventId is a number
   isPopupVisible.value = true
 }
 

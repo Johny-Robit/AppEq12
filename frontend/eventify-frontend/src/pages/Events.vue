@@ -13,7 +13,7 @@
       <h2 @click="goToEvent(event.event_id)" class="event-name">{{ event.event_name }}</h2>
       <p><strong>Address:</strong> {{ event.event_address }}</p>
       <p><strong>Date & Time:</strong> From {{ event.start_datetime }} To {{ event.end_datetime }}</p>
-      <p><strong>Attendees:</strong> 53 </p>
+      <p><strong>Attendees:</strong> {{ event.attendeesCount + 1 }}</p>
       <p><strong>Created by:</strong> {{ getUsername(event.ownerID) }}</p>
       <p>{{ event.description }}</p>
       <div class="button-group">
@@ -28,7 +28,7 @@
         <button @click="handleInviteSomeone(event.event_id)">Invite Someone</button>
       </div>
     </div>
-    <InvitePopup :visible="isPopupVisible" :users="users" :eventId="selectedEventId" @close="isPopupVisible = false" />
+    <InvitePopup :visible="isPopupVisible" :users="users" :eventId="Number(selectedEventId)" @close="isPopupVisible = false" />
   </div>
 </template>
 
@@ -38,7 +38,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { getAllEvents } from '../api/event'
 import { getAllUsers, getJoinedEventsList, getCreatedEventsList } from '../api/user' // Import getCreatedEventsList
 import { isLoggedIn, user } from '../store/user'
-import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI } from '../api/event'
+import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI, getAttendeesList } from '../api/event'
 import InvitePopup from '../components/InvitePopup.vue'
 
 const searchQuery = ref('')
@@ -57,6 +57,17 @@ const fetchEvents = async () => {
   try {
     const response = await getAllEvents()
     events.value = response
+    // Ensure the attendees property is initialized and the creator is part of the attendees list
+    for (const event of events.value) {
+      try {
+        const token = localStorage.getItem('token')
+        const attendees = await getAttendeesList(token, event.event_id)
+        event.attendeesCount = attendees.length
+      } catch (error) {
+        console.error('Failed to fetch attendees:', error)
+        event.attendeesCount = 0
+      }
+    }
   } catch (error) {
     console.error('Failed to fetch events:', error)
   }
@@ -186,7 +197,7 @@ const confirmDeleteEvent = (eventId) => {
 }
 
 const inviteSomeone = (eventId) => {
-  selectedEventId.value = eventId
+  selectedEventId.value = Number(eventId) // Ensure selectedEventId is a number
   isPopupVisible.value = true
 }
 
@@ -269,7 +280,7 @@ button:hover {
   color: #42b983;
 }
 
-.event-name:hover {
+event-name:hover {
   text-decoration: underline;
 }
 </style>
