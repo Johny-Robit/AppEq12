@@ -71,7 +71,7 @@ DATABASES = {
 
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com').split(',')
 
-CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com').split(',')
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'https://johny-robit.github.io').split(',')
 CORS_ALLOW_CREDENTIALS = True
 
 
