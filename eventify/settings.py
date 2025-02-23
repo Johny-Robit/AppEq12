@@ -30,6 +30,7 @@ STATIC_URL = "/static/"
 
 # Applications Django
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,6 +62,7 @@ AUTH_USER_MODEL = "events.CustomUser"
 
 # Middleware
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,7 +81,7 @@ DATABASES = {
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com').split(',')
 
 CORS_ALLOWED_ORIGINS = os.getenv(
-    'CORS_ALLOWED_ORIGINS',
+    "https://johny-robit.github.io",
     'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io'
 ).split(',')
 
@@ -90,6 +92,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5175",
     "http://localhost:8000",
 ]
+
+CORS_PREFLIGHT_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = [
     "GET",
