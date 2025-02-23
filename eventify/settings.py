@@ -18,6 +18,13 @@ DEBUG = False
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com').split(',')
 
+ALLOWED_HOSTS = [
+    "app-eq-12-eventify-29fb10cbb7c2.herokuapp.com",
+    "johny-robit.github.io",
+    "localhost",
+]
+
+
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
 
@@ -75,6 +82,31 @@ CORS_ALLOWED_ORIGINS = os.getenv(
     'CORS_ALLOWED_ORIGINS',
     'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io'
 ).split(',')
+
+CORS_ALLOWED_ORIGINS = [
+    "https://johny-robit.github.io",
+    "https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com",
+    "http://localhost:5173",
+    "http://localhost:5175",
+    "http://localhost:8000",
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "x-requested-with",
+]
+
+
 CORS_ALLOW_CREDENTIALS = True
 
 
