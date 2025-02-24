@@ -20,6 +20,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { inviteToEvent } from '../api/event'
+import { getToken } from '../store/user'
 
 const props = defineProps({
   visible: Boolean,
@@ -43,7 +44,7 @@ const filteredUsers = computed(() => {
 
 const inviteUser = async (userId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await inviteToEvent(token, props.eventId, userId)
     alert('User invited successfully')
     emit('close')

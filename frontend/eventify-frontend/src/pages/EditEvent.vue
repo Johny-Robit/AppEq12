@@ -36,7 +36,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getEventInformation, editEvent as editEventAPI } from '../api/event'
-import { isLoggedIn } from '../store/user'
+import { isLoggedIn, getToken } from '../store/user'
 
 const event = ref(null)
 const errorMessage = ref('')
@@ -70,7 +70,7 @@ const updateEvent = async () => {
   }
 
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await editEventAPI(token, event.value)
     router.push('/my-events')
   } catch (error) {

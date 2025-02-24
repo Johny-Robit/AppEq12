@@ -47,7 +47,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getEventInformation, deleteEvent as deleteEventAPI, getAttendeesList, removeAttendee as removeAttendeeAPI, getPendingInvites } from '../api/event'
 import { getAllUsers, getCreatedEventsList, getJoinedEventsList } from '../api/user' // Import getJoinedEventsList
-import { isLoggedIn, user } from '../store/user'
+import { isLoggedIn, user, getToken } from '../store/user'
 import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI } from '../api/event'
 import InvitePopup from '../components/InvitePopup.vue'
 
@@ -75,7 +75,7 @@ const fetchEvent = async () => {
 
 const fetchUsers = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     users.value = await getAllUsers(token)
   } catch (error) {
     console.error('Failed to fetch users:', error)
@@ -84,7 +84,7 @@ const fetchUsers = async () => {
 
 const fetchAttendees = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     attendees.value = await getAttendeesList(token, eventId)
   } catch (error) {
     console.error('Failed to fetch attendees:', error)
@@ -93,7 +93,7 @@ const fetchAttendees = async () => {
 
 const fetchPendingInvites = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     pendingInvites.value = await getPendingInvites(token, eventId)
   } catch (error) {
     console.error('Failed to fetch pending invites:', error)
@@ -103,7 +103,7 @@ const fetchPendingInvites = async () => {
 const removeAttendee = async (userId) => {
   if (confirm('Are you sure you want to remove this attendee?')) {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       await removeAttendeeAPI(token, eventId, userId)
       await fetchAttendees() // Refresh attendees list
     } catch (error) {
@@ -118,7 +118,7 @@ onMounted(async () => {
   await fetchAttendees()
   // Fetch joined events to initialize joinedEventIds
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const joinedEvents = await getJoinedEventsList(token)
     const createdEvents = await getCreatedEventsList(token)
     joinedEventIds.value = joinedEvents.map(event => event.event_id)
@@ -144,7 +144,7 @@ const getUsername = (userId) => {
 
 const joinEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await joinEventAPI(token, eventId)
     joinedEventIds.value.push(eventId)
     isJoined.value = true
@@ -156,7 +156,7 @@ const joinEvent = async (eventId) => {
 
 const leaveEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await leaveEventAPI(token, eventId)
     const index = joinedEventIds.value.indexOf(eventId)
     if (index !== -1) {
@@ -189,7 +189,7 @@ const editEvent = (eventId) => {
 
 const deleteEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await deleteEventAPI(token, eventId)
     router.push('/events')
   } catch (error) {

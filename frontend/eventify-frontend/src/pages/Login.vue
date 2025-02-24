@@ -35,10 +35,15 @@ const login = async () => {
       password: password.value
     }
     const response = await loginAPI(credentials)
-    // Save the token and redirect to the desired page
-    localStorage.setItem('token', response.token)
-    isLoggedIn.value = true
-    await fetchUserProfile()
+    // The loginAPI function now automatically sets the token within a cookie
+    if (response){
+      isLoggedIn.value = true
+      await fetchUserProfile()
+    } else {
+      isLoggedIn.value = false
+      throw new Error (response.error)
+    }
+    
     const redirectTo = route.query.redirect || '/'
     router.push(redirectTo)
   } catch (error) {

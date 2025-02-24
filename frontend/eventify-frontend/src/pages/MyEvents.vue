@@ -75,7 +75,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../store/user'
+import { isLoggedIn, user, getToken } from '../store/user'
 import { getJoinedEventsList, getCreatedEventsList, getEventInvitesList, getAllUsers } from '../api/user'
 import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI, getAttendeesList } from '../api/event'
 import InvitePopup from '../components/InvitePopup.vue'
@@ -98,7 +98,7 @@ const selectedEventId = ref(null)
 const initializeEvents = async (events) => {
   for (const event of events) {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const attendees = await getAttendeesList(token, event.event_id)
       event.attendeesCount = attendees.length
     } catch (error) {
@@ -113,7 +113,7 @@ onMounted(async () => {
     router.push({ path: '/login', query: { redirect: route.fullPath } })
   } else {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       joinedEvents.value = await getJoinedEventsList(token)
       createdEvents.value = await getCreatedEventsList(token)
       eventInvitationsList.value = await getEventInvitesList(token)
@@ -134,7 +134,7 @@ const getUsername = (userId) => {
 
 const joinEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await joinEventAPI(token, eventId)
     joinedEvents.value = await getJoinedEventsList(token)
     await initializeEvents(joinedEvents.value)
@@ -151,7 +151,7 @@ const confirmJoinEvent = (eventId) => {
 
 const leaveEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await leaveEventAPI(token, eventId)
     joinedEvents.value = await getJoinedEventsList(token)
     await initializeEvents(joinedEvents.value)
@@ -168,7 +168,7 @@ const confirmLeaveEvent = (eventId) => {
 
 const deleteEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await deleteEventAPI(token, eventId)
     createdEvents.value = await getCreatedEventsList(token)
     await initializeEvents(createdEvents.value)

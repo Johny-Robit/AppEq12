@@ -26,7 +26,7 @@
 <script setup>
 import { ref, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { isLoggedIn, user, fetchUserProfile } from '../store/user' // Import the user store
+import { isLoggedIn, user, fetchUserProfile, getToken } from '../store/user' // Import the user store
 import { logout as logoutAPI } from '../api/user' // Import the logout API function
 
 const route = useRoute()
@@ -40,7 +40,7 @@ const toggleDropdown = () => {
 
 const logout = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await logoutAPI(token)
     isLoggedIn.value = false
     localStorage.removeItem('token')

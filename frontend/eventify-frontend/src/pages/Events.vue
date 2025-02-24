@@ -37,7 +37,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getAllEvents } from '../api/event'
 import { getAllUsers, getJoinedEventsList, getCreatedEventsList } from '../api/user' // Import getCreatedEventsList
-import { isLoggedIn, user } from '../store/user'
+import { isLoggedIn, user, getToken } from '../store/user'
 import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI, getAttendeesList } from '../api/event'
 import InvitePopup from '../components/InvitePopup.vue'
 
@@ -60,7 +60,7 @@ const fetchEvents = async () => {
     // Ensure the attendees property is initialized and the creator is part of the attendees list
     for (const event of events.value) {
       try {
-        const token = localStorage.getItem('token')
+        const token = getToken()
         const attendees = await getAttendeesList(token, event.event_id)
         event.attendeesCount = attendees.length
       } catch (error) {
@@ -75,7 +75,7 @@ const fetchEvents = async () => {
 
 const fetchUsers = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const response = await getAllUsers(token)
     users.value = response
   } catch (error) {
@@ -85,7 +85,7 @@ const fetchUsers = async () => {
 
 const fetchJoinedEvents = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const joinedEvents = await getJoinedEventsList(token)
     joinedEventIds.value = joinedEvents.map(event => event.event_id)
   } catch (error) {
@@ -95,7 +95,7 @@ const fetchJoinedEvents = async () => {
 
 const fetchCreatedEvents = async () => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     const createdEvents = await getCreatedEventsList(token)
     createdEventIds.value = createdEvents.map(event => event.event_id)
   } catch (error) {
@@ -132,7 +132,7 @@ const clearSearch = () => {
 
 const joinEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await joinEventAPI(token, eventId)
     joinedEventIds.value.push(eventId)
   } catch (error) {
@@ -148,7 +148,7 @@ const confirmJoinEvent = (eventId) => {
 
 const leaveEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await leaveEventAPI(token, eventId)
     const index = joinedEventIds.value.indexOf(eventId)
     if (index !== -1) {
@@ -179,7 +179,7 @@ const editEvent = (eventId) => {
 
 const deleteEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await deleteEventAPI(token, eventId)
     const index = events.value.findIndex(event => event.event_id === eventId)
     if (index !== -1) {

@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { user, fetchUserProfile, isLoggedIn } from '../store/user'; // Import the user store
+import { user, fetchUserProfile, isLoggedIn, getToken } from '../store/user'; // Import the user store
 import { editProfile } from '../api/user'; // Import the editProfile API function
 import { useRouter } from 'vue-router';
 
@@ -39,7 +39,7 @@ export default {
     },
     async submitForm() {
       try {
-        const token = localStorage.getItem('token')
+        const token = getToken()
         const profileData = {
           description: this.form.description
         }
