@@ -20,7 +20,38 @@ DEBUG = True
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost').split(',')
+
+CORS_ALLOWED_ORIGINS = [
+    "https://johny-robit.github.io/", 
+]
+
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 
+    'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io'
+).split(',')
+
+
+CORS_PREFLIGHT_ALLOW_ALL = True
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "x-requested-with",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
@@ -75,35 +106,6 @@ MIDDLEWARE = [
 DATABASES = {
     'default': dj_database_url.config(env='JAWSDB_URL', default='sqlite:///db.sqlite3')
 }
-
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 
-    'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io'
-).split(',')
-
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 
-    'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost'
-).split(',')
-
-
-CORS_PREFLIGHT_ALLOW_ALL = True
-
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS"
-]
-
-CORS_ALLOW_HEADERS = [
-    "authorization",
-    "content-type",
-    "x-requested-with",
-]
-
-
-CORS_ALLOW_CREDENTIALS = True
 
 
 # Paramètrage pour la validation de passwords
