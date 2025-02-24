@@ -13,7 +13,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # TODO don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 # Domaines autorisés
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
 
@@ -145,8 +145,6 @@ pytest_plugins = ["django.contrib.auth"]
 LOG_DIR = os.path.join(BASE_DIR, "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
-import sys  # Required for stdout logging
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -155,42 +153,59 @@ LOGGING = {
             'format': '{levelname} {asctime} {module} {message}',
             'style': '{',
         },
-        'detailed': {
-            'format': '{levelname} {asctime} {module} {pathname}:{lineno} {message}',
+        'simple': {
+            'format': '{levelname} {message}',
             'style': '{',
         },
     },
     'handlers': {
-        'console': {  # Ensures logs are printed in Heroku logs
+        'console': {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'stream': sys.stdout,  # Sends logs to stdout
-            'formatter': 'detailed',
+            'formatter': 'simple',
         },
+        'eventify_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'eventify.log'),
+            'maxBytes': 1024 * 1024 * 5,
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+        'events_file': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOG_DIR, 'events.log'),
+            'maxBytes': 1024 * 1024 * 5,  
+            'backupCount': 3,  
+            'formatter': 'verbose',
+        },
+        #'django_file': {  # DEBUG Nouveau handler pour Django
+        #    'level': 'DEBUG',
+        #    'class': 'logging.FileHandler',
+        #    'filename': os.path.join(LOG_DIR, 'debug.log'),
+        #    'formatter': 'verbose',
+        #},
     },
     'loggers': {
-        'django': {  # Logs all Django messages
-            'handlers': ['console'],
+        'eventify': {
+            'handlers': ['console', 'eventify_file'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'django.request': {  # Logs HTTP requests including 400 errors
-            'handlers': ['console'],
-            'level': 'WARNING',
-            'propagate': False,
-        },
-        'eventify': {  # Logs custom app messages
-            'handlers': ['console'],
+        'events': {
+            'handlers': ['console', 'events_file'],
             'level': 'DEBUG',
             'propagate': False,
         },
-        'events': {  # Logs events-related messages
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
+        #'django': {  # DEBUG Nouveau logger pour Django
+        #    'handlers': ['console', 'django_file'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #},
     },
 }
+
 
 
 
