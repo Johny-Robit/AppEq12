@@ -16,14 +16,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 # Domaines autorisés
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com').split(',')
 
-ALLOWED_HOSTS = [
-    "app-eq-12-eventify-29fb10cbb7c2.herokuapp.com",
-    "johny-robit.github.io",
-    "localhost",
-]
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost').split(',')
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
@@ -79,20 +76,14 @@ DATABASES = {
     'default': dj_database_url.config(env='JAWSDB_URL', default='sqlite:///db.sqlite3')
 }
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com').split(',')
-
-CORS_ALLOWED_ORIGINS = os.getenv(
-    "https://johny-robit.github.io",
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 
     'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io'
 ).split(',')
 
-CORS_ALLOWED_ORIGINS = [
-    "https://johny-robit.github.io",
-    "https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com",
-    "http://localhost:5173",
-    "http://localhost:5175",
-    "http://localhost:8000",
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 
+    'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost'
+).split(',')
+
 
 CORS_PREFLIGHT_ALLOW_ALL = True
 
