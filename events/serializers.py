@@ -90,6 +90,7 @@ class GetAllUsersSerializer(serializers.ModelSerializer):
 class EventSerializer(serializers.ModelSerializer):
     is_public = serializers.BooleanField(source="event_is_public")
     event_id = serializers.IntegerField(read_only=True)
+    event_image_link = serializers.CharField(allow_blank=True, required=False, allow_null=True)
 
     class Meta:
         model = Event
