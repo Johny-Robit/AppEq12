@@ -47,7 +47,6 @@ const dateTime = ref('')
 const endTime = ref('')
 const description = ref('')
 const isPrivate = ref(false)
-const eventImageLink = ref('')
 const errorMessage = ref('')
 
 const isPublic = computed(() => !isPrivate.value)
@@ -73,8 +72,7 @@ const createEvent = async () => {
     start_datetime: dateTime.value,
     end_datetime: endTime.value,
     description: description.value,
-    is_public: isPublic.value,
-    event_image_link: eventImageLink.value || ''
+    is_public: isPublic.value
   }
 
   const token = localStorage.getItem('token')
