@@ -22,18 +22,28 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost').split(',')
-
-CORS_ALLOWED_ORIGINS = [
-    "https://johny-robit.github.io/", 
+ALLOWED_HOSTS = [
+    'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com',
+    'johny-robit.github.io',
+    'localhost',
+    'http://127.0.0.1:8000/',
+    'http://localhost:5173',
+    'http://localhost:5173/AppEq12/'
 ]
 
-CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 
-    'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io'
-).split(',')
+CORS_ALLOWED_ORIGINS = [
+    "https://johny-robit.github.io", 
+    "http://localhost:5173",
+    "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com"  # Ajoute ton API déployée
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com",
+    "https://johny-robit.github.io"
+]
 
-CORS_PREFLIGHT_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = False  # Désactive cette option pour plus de sécurité
 
 CORS_ALLOW_METHODS = [
     "GET",
@@ -50,6 +60,7 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -104,7 +115,14 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(env='JAWSDB_URL', default='sqlite:///db.sqlite3')
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+    }
 }
 
 
