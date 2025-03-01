@@ -53,7 +53,7 @@ export default {
       }
     },
     cancelChanges() {
-      this.$router.push('/profile');
+      this.$router.push('/AppEq12/profile');
     }
   }
 };
