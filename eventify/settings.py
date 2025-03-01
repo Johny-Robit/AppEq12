@@ -12,8 +12,9 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # Sécurité
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+
 # TODO don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # Domaines autorisés
 # TODO inscrire notre domaine une fois le déploiement sur Heroku
 
@@ -26,16 +27,20 @@ ALLOWED_HOSTS = [
     'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com',
     'johny-robit.github.io',
     'localhost',
-    'http://127.0.0.1:8000/',
+    '127.0.0.1',
     'http://localhost:5173',
     'http://localhost:5173/AppEq12/'
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://johny-robit.github.io", 
-    "http://localhost:5173",
-    "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com"  # Ajoute ton API déployée
-]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "https://johny-robit.github.io", 
+#     "http://localhost:5173",
+#     "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com"  # Ajoute ton API déployée
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
@@ -43,7 +48,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://johny-robit.github.io"
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False  # Désactive cette option pour plus de sécurité
+
 
 CORS_ALLOW_METHODS = [
     "GET",
