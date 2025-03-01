@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const API_URL = 'https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com/api/user';
+// const API_URL = 'https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com/api/user';
+const API_URL = 'http://127.0.0.1:8000/api/user';
 
 export const signup = async (userData) => {
   try {
@@ -24,7 +25,7 @@ export const login = async (credentials) => {
     
     // stocker le token dans un cookie avec durée de 7 jours et transmission 
     // sécurisée (https) seulement. 
-    if (response.ok && response.data.token) {
+    if (response.status === 200 && response.data.token) {
       Cookies.set('token', response.data.token, { expires: 7, secure: true });
     }
     

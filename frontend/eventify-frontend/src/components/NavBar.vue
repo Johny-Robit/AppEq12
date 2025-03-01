@@ -11,6 +11,7 @@
       <RouterLink to="/my-events">My Events</RouterLink>
       <div class="separator"></div>
       <RouterLink v-if="!isLoggedIn && !isAuthPage" to="/login">Login</RouterLink>
+      <span v-if="nickname"> Nicknamed : {{ nickname }} </span>
       <div v-if="isLoggedIn" class="avatar-container" @click="toggleDropdown">
         <img src="../assets/Default_Avatar_Icon.jpg" alt="Avatar" class="avatar" />
         <span class="username">{{ user.username }}</span>
@@ -28,15 +29,21 @@ import { ref, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { isLoggedIn, user, fetchUserProfile, getToken } from '../store/user' // Import the user store
 import { logout as logoutAPI } from '../api/user' // Import the logout API function
+import { getNickname } from '../utils/storage'
 
 const route = useRoute()
 const router = useRouter()
 const isAuthPage = route.path === '/login' || route.path === '/signup'
 const dropdownVisible = ref(false)
+const nickname = ref("");
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
 }
+
+onMounted(() => {
+  nickname.value = getNickname();
+});
 
 const logout = async () => {
   try {

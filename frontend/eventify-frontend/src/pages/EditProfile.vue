@@ -5,6 +5,8 @@
       <div>
         <label for="description">Description:</label>
         <textarea id="description" v-model="form.description"></textarea>
+        <label for="nickname">Nickname:</label>
+        <input v-model="form.nickname" type="text" id="nickname" placeholder="Enter your nickname" />
       </div>
       <div class="buttons">
         <button type="submit">Save Changes</button>
@@ -24,31 +26,45 @@ export default {
     return {
       form: {
         username: '',
-        description: ''
+        description: '',
+        nickname: ''
       }
     };
   },
   created() {
     this.fetchUserData();
+    this.loadNickname(); 
   },
   methods: {
     async fetchUserData() {
-      await fetchUserProfile()
-      this.form.username = user.value.username
-      this.form.description = user.value.description
+      await fetchUserProfile();
+      this.form.username = user.value.username;
+      this.form.description = user.value.description;
+    },
+    loadNickname() {
+      const storedNickname = localStorage.getItem("nickname");
+      if (storedNickname) {
+        this.form.nickname = storedNickname;
+      }
+    },
+    saveNickname() {
+      localStorage.setItem("nickname", this.form.nickname);
     },
     async submitForm() {
       try {
-        const token = getToken()
+        const token = getToken();
         const profileData = {
           description: this.form.description
-        }
-        await editProfile(token, profileData)
-        await fetchUserProfile()
-        this.$router.push('/profile')
+        };
+        await editProfile(token, profileData);
+        await fetchUserProfile();
+        
+        this.saveNickname();
+
+        this.$router.push('/profile');
       } catch (error) {
-        console.error('Failed to update profile:', error)
-        alert('Failed to update profile')
+        console.error('Failed to update profile:', error);
+        alert('Failed to update profile');
       }
     },
     cancelChanges() {
@@ -57,6 +73,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .edit-profile {
