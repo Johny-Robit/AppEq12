@@ -1,22 +1,21 @@
 <template>
   <nav>
     <div class="left">
-      <RouterLink to="/" class="brand">Eventify</RouterLink>
+      <RouterLink to="/AppEq12" class="brand">Eventify</RouterLink>
     </div>
     <div class="center">
-      <RouterLink to="/events">Events</RouterLink>
+      <RouterLink to="/AppEq12/events">Events</RouterLink>
     </div>
     <div class="right">
-      <RouterLink to="/create-event" class="button">Create an Event</RouterLink>
-      <RouterLink to="/my-events">My Events</RouterLink>
+      <RouterLink to="/AppEq12/create-event" class="button">Create an Event</RouterLink>
+      <RouterLink to="/AppEq12/my-events">My Events</RouterLink>
       <div class="separator"></div>
-      <RouterLink v-if="!isLoggedIn && !isAuthPage" to="/login">Login</RouterLink>
-      <span v-if="nickname"> Nicknamed : {{ nickname }} </span>
+      <RouterLink v-if="!isLoggedIn && !isAuthPage" to="/AppEq12/login">Login</RouterLink>
       <div v-if="isLoggedIn" class="avatar-container" @click="toggleDropdown">
         <img src="../assets/Default_Avatar_Icon.jpg" alt="Avatar" class="avatar" />
-        <span class="username">{{ user.username }}</span>
+        <span class="username">{{ username }}</span>
         <div v-if="dropdownVisible" class="dropdown-menu">
-          <RouterLink to="/profile">Profile</RouterLink>
+          <RouterLink to="/AppEq12/profile">Profile</RouterLink>
           <button @click="logout">Logout</button>
         </div>
       </div>
@@ -25,33 +24,27 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { isLoggedIn, user, fetchUserProfile, getToken } from '../store/user' // Import the user store
+import { isLoggedIn, user, fetchUserProfile, getToken, removeToken } from '../store/user' // Import the user store
 import { logout as logoutAPI } from '../api/user' // Import the logout API function
-import { getNickname } from '../utils/storage'
 
 const route = useRoute()
 const router = useRouter()
-const isAuthPage = route.path === '/login' || route.path === '/signup'
+const isAuthPage = route.path === '/AppEq12/login' || route.path === '/AppEq12/signup'
 const dropdownVisible = ref(false)
-const nickname = ref("");
+const username = computed(() => localStorage.getItem('username') || '')
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value
 }
 
-onMounted(() => {
-  nickname.value = getNickname();
-});
-
 const logout = async () => {
   try {
     const token = getToken()
     await logoutAPI(token)
-    isLoggedIn.value = false
-    localStorage.removeItem('token')
-    router.push('/')
+    removeToken() // Properly remove the token
+    router.push('/AppEq12')
   } catch (error) {
     console.error('Logout error:', error)
     alert('Logout failed: ' + error.error)

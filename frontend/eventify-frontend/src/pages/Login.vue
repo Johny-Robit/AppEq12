@@ -44,7 +44,7 @@ const login = async () => {
       throw new Error (response.error)
     }
     
-    const redirectTo = route.query.redirect || '/'
+    const redirectTo = route.query.redirect || '/AppEq12'
     router.push(redirectTo)
   } catch (error) {
     console.error('Login error:', error)

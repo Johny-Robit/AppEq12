@@ -43,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { getEventInformation, deleteEvent as deleteEventAPI, getAttendeesList, removeAttendee as removeAttendeeAPI, getPendingInvites } from '../api/event'
 import { getAllUsers, getCreatedEventsList, getJoinedEventsList } from '../api/user' // Import getJoinedEventsList
@@ -137,9 +137,14 @@ const formatDateTime = (dateTime) => {
   return dateTime.replace('T', ' ')
 }
 
+const username = computed(() => localStorage.getItem('username') || '')
+
 const getUsername = (userId) => {
-  const user = users.value.find(user => user.user_id === userId)
-  return user ? user.username : 'Unknown'
+  if (userId === user.value.user_id) {
+    return username.value; // Get username from computed property
+  }
+  const foundUser = users.value.find(user => user.user_id === userId)
+  return foundUser ? foundUser.username : 'Unknown'
 }
 
 const joinEvent = async (eventId) => {

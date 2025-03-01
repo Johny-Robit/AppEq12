@@ -161,7 +161,7 @@ const leaveEvent = async (eventId) => {
 
 const handleJoinEvent = (eventId) => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: route.fullPath } })
+    router.push({ path: '/AppEq12/login', query: { redirect: route.fullPath } })
   } else {
     confirmJoinEvent(eventId)
   }
@@ -174,7 +174,7 @@ const handleLeaveEvent = (eventId) => {
 }
 
 const editEvent = (eventId) => {
-  router.push({ path: `/edit-event/${eventId}` })
+  router.push({ path: `/AppEq12/edit-event/${eventId}` })
 }
 
 const deleteEvent = async (eventId) => {
@@ -203,14 +203,14 @@ const inviteSomeone = (eventId) => {
 
 const handleInviteSomeone = (eventId) => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: route.fullPath } })
+    router.push({ path: '/AppEq12/login', query: { redirect: route.fullPath } })
   } else {
     inviteSomeone(eventId)
   }
 }
 
 const goToEvent = (eventId) => {
-  router.push({ path: `/event/${eventId}` })
+  router.push({ path: `/AppEq12/event/${eventId}` })
 }
 
 const isJoined = (eventId) => {

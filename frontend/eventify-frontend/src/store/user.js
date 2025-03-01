@@ -10,9 +10,15 @@ export const getToken = () => {
   return Cookies.get('token') || null;
 };
 
+// fonction pour supprimer le token
+export const removeToken = () => {
+  Cookies.remove('token');
+  localStorage.removeItem('username');
+  isLoggedIn.value = false;
+};
+
 // fonction pour récupérer le profil de l'utilisateur
 export const fetchUserProfile = async () => {
-
   const token = getToken(); // Récupère le token à partir du cookie
 
   if (isLoggedIn.value && token) {

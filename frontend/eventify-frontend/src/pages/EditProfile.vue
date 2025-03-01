@@ -5,8 +5,6 @@
       <div>
         <label for="description">Description:</label>
         <textarea id="description" v-model="form.description"></textarea>
-        <label for="nickname">Nickname:</label>
-        <input v-model="form.nickname" type="text" id="nickname" placeholder="Enter your nickname" />
       </div>
       <div class="buttons">
         <button type="submit">Save Changes</button>
@@ -19,36 +17,25 @@
 <script>
 import { user, fetchUserProfile, isLoggedIn, getToken } from '../store/user'; // Import the user store
 import { editProfile } from '../api/user'; // Import the editProfile API function
-import { useRouter } from 'vue-router';
 
 export default {
   data() {
     return {
       form: {
         username: '',
-        description: '',
-        nickname: ''
+        description: ''
       }
     };
   },
   created() {
     this.fetchUserData();
-    this.loadNickname(); 
+    this.form.username = localStorage.getItem('username'); // Get username from local storage
   },
   methods: {
     async fetchUserData() {
       await fetchUserProfile();
       this.form.username = user.value.username;
       this.form.description = user.value.description;
-    },
-    loadNickname() {
-      const storedNickname = localStorage.getItem("nickname");
-      if (storedNickname) {
-        this.form.nickname = storedNickname;
-      }
-    },
-    saveNickname() {
-      localStorage.setItem("nickname", this.form.nickname);
     },
     async submitForm() {
       try {
@@ -58,8 +45,6 @@ export default {
         };
         await editProfile(token, profileData);
         await fetchUserProfile();
-        
-        this.saveNickname();
 
         this.$router.push('/profile');
       } catch (error) {

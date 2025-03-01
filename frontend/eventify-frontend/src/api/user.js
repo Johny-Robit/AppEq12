@@ -27,6 +27,8 @@ export const login = async (credentials) => {
     // sécurisée (https) seulement. 
     if (response.status === 200 && response.data.token) {
       Cookies.set('token', response.data.token, { expires: 7, secure: true });
+      const userinfo = await getProfileInfo(response.data.token);
+      localStorage.setItem('username', userinfo.username);
     }
     
     return response.data;

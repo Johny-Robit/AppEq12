@@ -95,6 +95,16 @@ const pastEvents = computed(() => {
 const isPopupVisible = ref(false)
 const selectedEventId = ref(null)
 
+const username = computed(() => localStorage.getItem('username') || '')
+
+const getUsername = (userId) => {
+  if (userId === user.value.user_id) {
+    return username.value; // Get username from computed property
+  }
+  const foundUser = users.value.find(user => user.user_id === userId)
+  return foundUser ? foundUser.username : 'Unknown'
+}
+
 const initializeEvents = async (events) => {
   for (const event of events) {
     try {
@@ -110,7 +120,7 @@ const initializeEvents = async (events) => {
 
 onMounted(async () => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: route.fullPath } })
+    router.push({ path: '/AppEq12/login', query: { redirect: route.fullPath } })
   } else {
     try {
       const token = getToken()
@@ -126,11 +136,6 @@ onMounted(async () => {
     }
   }
 })
-
-const getUsername = (userId) => {
-  const user = users.value.find(user => user.user_id === userId)
-  return user ? user.username : 'Unknown'
-}
 
 const joinEvent = async (eventId) => {
   try {
@@ -184,7 +189,7 @@ const confirmDeleteEvent = (eventId) => {
 }
 
 const editEvent = (eventId) => {
-  router.push({ path: `/edit-event/${eventId}` })
+  router.push({ path: `/AppEq12/edit-event/${eventId}` })
 }
 
 const inviteSomeone = (eventId) => {
@@ -198,11 +203,11 @@ const formatDateTime = (dateTime) => {
 }
 
 const goToEvent = (eventId) => {
-  router.push({ path: `/event/${eventId}` })
+  router.push({ path: `/AppEq12/event/${eventId}` })
 }
 
 const goToCreateEvent = () => {
-  router.push({ path: '/create-event' })
+  router.push({ path: '/AppEq12/create-event' })
 }
 </script>
 

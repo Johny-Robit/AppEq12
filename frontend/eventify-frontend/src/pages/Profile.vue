@@ -3,7 +3,7 @@
     <h1>Profile</h1>
     <p><strong>Username:</strong> {{ user.username }}</p>
     <p><strong>Description:</strong> {{ user.description }}</p>
-    <RouterLink to="/edit-profile" class="button">Edit description</RouterLink>
+    <RouterLink to="/AppEq12/edit-profile" class="button">Edit description</RouterLink>
   </div>
 </template>
 
@@ -16,7 +16,7 @@ const router = useRouter()
 
 onMounted(async () => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: '/profile' } })
+    router.push({ path: '/AppEq12/login', query: { redirect: '/AppEq12/profile' } })
   } else {
     await fetchUserProfile()
   }
