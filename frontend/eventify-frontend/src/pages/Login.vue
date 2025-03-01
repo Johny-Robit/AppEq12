@@ -12,7 +12,7 @@
       </div>
       <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <RouterLink to="/signup">Sign up here</RouterLink></p>
+    <p>Don't have an account? <RouterLink to="/AppEq12/signup">Sign up here</RouterLink></p>
   </div>
 </template>
 

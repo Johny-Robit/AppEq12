@@ -46,7 +46,7 @@ export default {
         await editProfile(token, profileData);
         await fetchUserProfile();
 
-        this.$router.push('/profile');
+        this.$router.push('/AppEq12/profile');
       } catch (error) {
         console.error('Failed to update profile:', error);
         alert('Failed to update profile');
