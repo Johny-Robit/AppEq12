@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-//const API_URL = 'https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com/api/event';
-const API_URL = 'http://127.0.0.1:8000/api/event';
+const API_URL = 'https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com/api/event';
 
 
 
