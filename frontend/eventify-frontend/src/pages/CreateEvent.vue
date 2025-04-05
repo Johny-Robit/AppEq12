@@ -38,7 +38,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn } from '../store/user'
+import { isLoggedIn, getToken } from '../store/user'
 import { createEvent as createEventAPI } from '../api/event'
 
 const name = ref('')
@@ -75,7 +75,7 @@ const createEvent = async () => {
     is_public: isPublic.value
   }
 
-  const token = localStorage.getItem('token')
+  const token = getToken()
   try {
     await createEventAPI(token, newEvent)
     router.push('/events')

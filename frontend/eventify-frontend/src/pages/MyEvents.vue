@@ -75,7 +75,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn, user } from '../store/user'
+import { isLoggedIn, user, getToken } from '../store/user'
 import { getJoinedEventsList, getCreatedEventsList, getEventInvitesList, getAllUsers } from '../api/user'
 import { joinEvent as joinEventAPI, leaveEvent as leaveEventAPI, deleteEvent as deleteEventAPI, getAttendeesList } from '../api/event'
 import InvitePopup from '../components/InvitePopup.vue'
@@ -95,10 +95,20 @@ const pastEvents = computed(() => {
 const isPopupVisible = ref(false)
 const selectedEventId = ref(null)
 
+const username = computed(() => localStorage.getItem('username') || '')
+
+const getUsername = (userId) => {
+  if (userId === user.value.user_id) {
+    return username.value; // Get username from computed property
+  }
+  const foundUser = users.value.find(user => user.user_id === userId)
+  return foundUser ? foundUser.username : 'Unknown'
+}
+
 const initializeEvents = async (events) => {
   for (const event of events) {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       const attendees = await getAttendeesList(token, event.event_id)
       event.attendeesCount = attendees.length
     } catch (error) {
@@ -110,10 +120,10 @@ const initializeEvents = async (events) => {
 
 onMounted(async () => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: route.fullPath } })
+    router.push({ path: '/AppEq12/login', query: { redirect: route.fullPath } })
   } else {
     try {
-      const token = localStorage.getItem('token')
+      const token = getToken()
       joinedEvents.value = await getJoinedEventsList(token)
       createdEvents.value = await getCreatedEventsList(token)
       eventInvitationsList.value = await getEventInvitesList(token)
@@ -127,14 +137,9 @@ onMounted(async () => {
   }
 })
 
-const getUsername = (userId) => {
-  const user = users.value.find(user => user.user_id === userId)
-  return user ? user.username : 'Unknown'
-}
-
 const joinEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await joinEventAPI(token, eventId)
     joinedEvents.value = await getJoinedEventsList(token)
     await initializeEvents(joinedEvents.value)
@@ -151,7 +156,7 @@ const confirmJoinEvent = (eventId) => {
 
 const leaveEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await leaveEventAPI(token, eventId)
     joinedEvents.value = await getJoinedEventsList(token)
     await initializeEvents(joinedEvents.value)
@@ -168,7 +173,7 @@ const confirmLeaveEvent = (eventId) => {
 
 const deleteEvent = async (eventId) => {
   try {
-    const token = localStorage.getItem('token')
+    const token = getToken()
     await deleteEventAPI(token, eventId)
     createdEvents.value = await getCreatedEventsList(token)
     await initializeEvents(createdEvents.value)
@@ -184,7 +189,7 @@ const confirmDeleteEvent = (eventId) => {
 }
 
 const editEvent = (eventId) => {
-  router.push({ path: `/edit-event/${eventId}` })
+  router.push({ path: `/AppEq12/edit-event/${eventId}` })
 }
 
 const inviteSomeone = (eventId) => {
@@ -198,11 +203,11 @@ const formatDateTime = (dateTime) => {
 }
 
 const goToEvent = (eventId) => {
-  router.push({ path: `/event/${eventId}` })
+  router.push({ path: `/AppEq12/event/${eventId}` })
 }
 
 const goToCreateEvent = () => {
-  router.push({ path: '/create-event' })
+  router.push({ path: '/AppEq12/create-event' })
 }
 </script>
 
