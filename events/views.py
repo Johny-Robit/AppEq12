@@ -72,7 +72,7 @@ class UserLogin(APIView):
         
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
     
-class RefreshTokenView(APIView):
+class RefreshToken(APIView):
     def post(self, request):
         refresh_token = request.data.get("refresh_token")
         if not refresh_token:
