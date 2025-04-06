@@ -25,7 +25,8 @@ export const login = async (credentials) => {
     // stocker le token dans un cookie avec durée de 7 jours et transmission 
     // sécurisée (https) seulement. 
     if (response.status === 200 && response.data.token) {
-      Cookies.set('token', response.data.token, { expires: 7, secure: true });
+      Cookies.set('token', response.data.token, { expires: 7, secure: true, httpOnly: true });
+      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true, httpOnly: true });
       const userinfo = await getProfileInfo(response.data.token);
       localStorage.setItem('username', userinfo.username);
     }
@@ -35,6 +36,25 @@ export const login = async (credentials) => {
     throw error.response.data;
   }
 };
+
+export const refreshAccessToken = async () => {
+  const refreshToken = Cookies.get('refresh_token');
+  if (!refreshToken) {
+    console.error('No refresh token found.');
+    return null;
+  }
+
+  try {
+    const response = await axios.post(`${API_URL}/token/refresh/`, { refresh: refreshToken });
+    if (response.status === 200 && response.data.token) {
+      Cookies.set('token', response.data.token, { expires: 7, secure: true, httpOnly: true });
+      return response.data.token;
+    }
+  } catch (error) {
+    console.error('Failed to refresh access token:', error);
+    return null;
+  }
+}
 
 export const logout = async (token) => {
   try {
