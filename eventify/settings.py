@@ -86,7 +86,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = "events.CustomUser"
+ACCESS_TOKEN_LIFETIME = 30  # minutes
+REFRESH_TOKEN_LIFETIME = 7  # jours
+AUTH_USER_MODEL = "events.CustomUser"  # Modèle d'utilisateur personnalisé
 
 # Middleware
 MIDDLEWARE = [

@@ -1,13 +1,19 @@
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from datetime import datetime, timedelta
 import uuid
 
 
 class AccessToken(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     token = models.UUIDField(default=uuid.uuid4, unique=True)
+    refresh_token = models.UUIDField(default=uuid.uuid4, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField(default=lambda: datetime.now() + timedelta(minutes=30))
+    created_at = models.DateTimeField(auto_now_add=True)
+    refresh_expires_at = models.DateTimeField(default=lambda: datetime.now() + timedelta(days=7))
 
 
 class CustomUser(AbstractUser):
