@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api/event'; // Ensure this points to the backend server address
+const API_URL = 'http://localhost:8000/api/event';
+
+
 
 export const joinEvent = async (token, eventId) => {
   try {

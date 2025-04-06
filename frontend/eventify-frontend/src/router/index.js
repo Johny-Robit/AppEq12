@@ -12,50 +12,50 @@ import Event from '../pages/Event.vue'
 import { isLoggedIn } from '../store/user.js'
 
 const routes = [
-  { path: '/', component: Home },
-  { path: '/login', component: Login },
-  { path: '/signup', component: Signup },
-  { path: '/events', component: Events },
+  { path: '/AppEq12', component: Home },
+  { path: '/AppEq12/login', component: Login },
+  { path: '/AppEq12/signup', component: Signup },
+  { path: '/AppEq12/events', component: Events },
   {
-    path: '/my-events',
+    path: '/AppEq12/my-events',
     component: MyEvents,
   },
   {
-    path: '/create-event',
+    path: '/AppEq12/create-event',
     component: CreateEvent,
     beforeEnter: (to, from, next) => {
       if (!isLoggedIn.value) {
-        next({ path: '/login', query: { redirect: to.fullPath } })
+        next({ path: '/AppEq12/login', query: { redirect: to.fullPath } })
       } else {
         next()
       }
     },
   },
   {
-    path: '/edit-event/:id',
+    path: '/AppEq12/edit-event/:id',
     component: EditEvent,
     beforeEnter: (to, from, next) => {
       if (!isLoggedIn.value) {
-        next({ path: '/login', query: { redirect: to.fullPath } })
+        next({ path: '/AppEq12/login', query: { redirect: to.fullPath } })
       } else {
         next()
       }
     },
   },
-  { path: '/profile', component: Profile },
+  { path: '/AppEq12/profile', component: Profile },
   {
-    path: '/edit-profile',
+    path: '/AppEq12/edit-profile',
     component: EditProfile,
     beforeEnter: (to, from, next) => {
       if (!isLoggedIn.value) {
-        next({ path: '/login', query: { redirect: to.fullPath } })
+        next({ path: '/AppEq12/login', query: { redirect: to.fullPath } })
       } else {
         next()
       }
     },
   },
   {
-    path: '/event/:id',
+    path: '/AppEq12/event/:id',
     name: 'Event',
     component: Event
   },

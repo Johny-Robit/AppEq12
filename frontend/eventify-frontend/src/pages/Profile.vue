@@ -3,22 +3,32 @@
     <h1>Profile</h1>
     <p><strong>Username:</strong> {{ user.username }}</p>
     <p><strong>Description:</strong> {{ user.description }}</p>
-    <RouterLink to="/edit-profile" class="button">Edit description</RouterLink>
+    <div class="toggle-container">
+      <label for="profile-toggle">Enable Notifications:</label>
+      <input type="checkbox" id="profile-toggle" v-model="isNotificationsEnabled" @change="saveToggleState" />
+    </div>
+    <RouterLink to="/AppEq12/edit-profile" class="button">Edit description</RouterLink>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { isLoggedIn, user, fetchUserProfile } from '../store/user' // Import the user store
 
 const router = useRouter()
+const isNotificationsEnabled = ref(false)
+
+const saveToggleState = () => {
+  localStorage.setItem('notificationsEnabled', isNotificationsEnabled.value)
+}
 
 onMounted(async () => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: '/profile' } })
+    router.push({ path: '/AppEq12/login', query: { redirect: '/AppEq12/profile' } })
   } else {
     await fetchUserProfile()
+    isNotificationsEnabled.value = localStorage.getItem('notificationsEnabled') === 'true'
   }
 })
 </script>
@@ -34,6 +44,13 @@ onMounted(async () => {
   max-width: 600px;
   width: 100%;
   margin: 2em auto;
+}
+
+.toggle-container {
+  margin: 1em 0;
+  display: flex;
+  align-items: center;
+  gap: 1em;
 }
 
 .button {

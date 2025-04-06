@@ -38,7 +38,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { isLoggedIn } from '../store/user'
+import { isLoggedIn, getToken } from '../store/user'
 import { createEvent as createEventAPI } from '../api/event'
 
 const name = ref('')
@@ -56,7 +56,7 @@ const route = useRoute()
 
 onMounted(() => {
   if (!isLoggedIn.value) {
-    router.push({ path: '/login', query: { redirect: route.fullPath } })
+    router.push({ path: '/AppEq12/login', query: { redirect: route.fullPath } })
   }
 })
 
@@ -75,10 +75,10 @@ const createEvent = async () => {
     is_public: isPublic.value
   }
 
-  const token = localStorage.getItem('token')
+  const token = getToken()
   try {
     await createEventAPI(token, newEvent)
-    router.push('/events')
+    router.push('/AppEq12/events')
   } catch (error) {
     errorMessage.value = 'Failed to create event: ' + error.message
     console.error('Failed to create event:', error)
@@ -93,7 +93,7 @@ const confirmCreateEvent = () => {
 
 const confirmCancelEvent = () => {
   if (confirm('Are you sure you want to cancel creating this event?')) {
-    router.push('/events')
+    router.push('/AppEq12/events')
   }
 }
 </script>

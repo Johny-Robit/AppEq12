@@ -12,7 +12,7 @@
       </div>
       <button type="submit">Login</button>
     </form>
-    <p>Don't have an account? <RouterLink to="/signup">Sign up here</RouterLink></p>
+    <p>Don't have an account? <RouterLink to="/AppEq12/signup">Sign up here</RouterLink></p>
   </div>
 </template>
 
@@ -35,11 +35,16 @@ const login = async () => {
       password: password.value
     }
     const response = await loginAPI(credentials)
-    // Save the token and redirect to the desired page
-    localStorage.setItem('token', response.token)
-    isLoggedIn.value = true
-    await fetchUserProfile()
-    const redirectTo = route.query.redirect || '/'
+    // The loginAPI function now automatically sets the token within a cookie
+    if (response){
+      isLoggedIn.value = true
+      await fetchUserProfile()
+    } else {
+      isLoggedIn.value = false
+      throw new Error (response.error)
+    }
+    
+    const redirectTo = route.query.redirect || '/AppEq12'
     router.push(redirectTo)
   } catch (error) {
     console.error('Login error:', error)

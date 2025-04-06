@@ -15,9 +15,8 @@
 </template>
 
 <script>
-import { user, fetchUserProfile, isLoggedIn } from '../store/user'; // Import the user store
+import { user, fetchUserProfile, isLoggedIn, getToken } from '../store/user'; // Import the user store
 import { editProfile } from '../api/user'; // Import the editProfile API function
-import { useRouter } from 'vue-router';
 
 export default {
   data() {
@@ -30,33 +29,36 @@ export default {
   },
   created() {
     this.fetchUserData();
+    this.form.username = localStorage.getItem('username'); // Get username from local storage
   },
   methods: {
     async fetchUserData() {
-      await fetchUserProfile()
-      this.form.username = user.value.username
-      this.form.description = user.value.description
+      await fetchUserProfile();
+      this.form.username = user.value.username;
+      this.form.description = user.value.description;
     },
     async submitForm() {
       try {
-        const token = localStorage.getItem('token')
+        const token = getToken();
         const profileData = {
           description: this.form.description
-        }
-        await editProfile(token, profileData)
-        await fetchUserProfile()
-        this.$router.push('/profile')
+        };
+        await editProfile(token, profileData);
+        await fetchUserProfile();
+
+        this.$router.push('/AppEq12/profile');
       } catch (error) {
-        console.error('Failed to update profile:', error)
-        alert('Failed to update profile')
+        console.error('Failed to update profile:', error);
+        alert('Failed to update profile');
       }
     },
     cancelChanges() {
-      this.$router.push('/profile');
+      this.$router.push('/AppEq12/profile');
     }
   }
 };
 </script>
+
 
 <style scoped>
 .edit-profile {

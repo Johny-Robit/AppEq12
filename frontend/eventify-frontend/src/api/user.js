@@ -1,11 +1,14 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
-const API_URL = 'http://localhost:8000/api/user'; // Ensure this points to the backend server address
+const API_URL = 'http://localhost:8000/api/user';
 
 export const signup = async (userData) => {
   try {
     const response = await axios.post(`${API_URL}/signup/`, userData);
+    
     return response.data;
+
   } catch (error) {
     if (error.response) {
       throw error.response.data;
@@ -18,6 +21,12 @@ export const signup = async (userData) => {
 export const login = async (credentials) => {
   try {
     const response = await axios.post(`${API_URL}/login/`, credentials);
+    
+    // Store the token in a cookie with a duration of 7 days and secure transmission (https) only.
+    if (response.status === 200 && response.data.token) {
+      Cookies.set('token', response.data.token, { expires: 7, secure: true });
+    }
+    
     return response.data;
   } catch (error) {
     throw error.response.data;
