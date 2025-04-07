@@ -23,9 +23,9 @@ export const login = async (credentials) => {
     const response = await axios.post(`${API_URL}/login/`, credentials, { withCredentials: true });
     
     if (response.status === 200 && response.data.token) {
-      Cookies.set('token', response.data.token, { expires: 7, secure: true });
       const expirationTime = 1 / 48; // 30 minutes in days
-      Cookies.set('refresh_token', response.data.refresh_token, { expires: expirationTime, secure: true });
+      Cookies.set('token', response.data.token, { expires: expirationTime, secure: true });
+      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true });
     }
     
     return response.data;

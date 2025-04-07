@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-import dj_database_url
+
 
 set_environment = 'localhost' # Change this to 'heroku' when deploying to Heroku
 
