@@ -103,15 +103,14 @@ class EventSerializer(serializers.ModelSerializer):
         """
         Vérifie que l'URL de l'image est valide.
         """
-        if value:
-            url_pattern = re.compile(
-                r'^(https?:\/\/)?'  # http:// ou https:// (optionnel)
-                r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}'  # Nom de domaine
-                r'(:\d+)?(\/.*)?$'  # Port optionnel et chemin
-            )
+        url_pattern = re.compile(
+            r'^(https?:\/\/)?'  # http:// ou https:// (optionnel)
+            r'([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}'  # Nom de domaine
+            r'(:\d+)?(\/.*)?$'  # Port optionnel et chemin
+        )
 
-            if not url_pattern.match(value):
-                raise serializers.ValidationError("L'URL fournie n'est pas valide.")
+        if not url_pattern.match(value):
+            raise serializers.ValidationError("L'URL fournie n'est pas valide.")
 
         return value
     

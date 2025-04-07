@@ -5,8 +5,10 @@ from rest_framework import status
 from .models import AccessToken, Event
 from django.contrib.auth import get_user_model
 import uuid
+from datetime import datetime
+from django.utils import timezone
 from datetime import timedelta
-from django.utils.timezone import now
+from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import (
     UserLoginSerializer, 
@@ -62,8 +64,8 @@ class UserLogin(APIView):
             # Générer un nouveau token
             access_model_entry = AccessToken.objects.create(
                 user=user,
-                expires_at=now() + timedelta(minutes=30),
-                refresh_expires_at=now() + timedelta(days=7)
+                expires_at=timezone.now() + timedelta(minutes=30),
+                refresh_expires_at=timezone.now() + timedelta(days=7)
                 )
 
             return Response({
@@ -74,20 +76,21 @@ class UserLogin(APIView):
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
     
 class RefreshToken(APIView):
+    @csrf_exempt
     def post(self, request):
-        refresh_token = request.data.get("refresh_token")
+        refresh_token = request.COOKIES.get("refresh_token")
         if not refresh_token:
             return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
         
         try:
             access_model_entry = AccessToken.objects.get(refresh_token=refresh_token)
 
-            if access_model_entry.refresh_expires_at < now():
+            if access_model_entry.refresh_expires_at < datetime.now():
                 return Response({"error": "Refresh token expired, you must log in again."}, status=status.HTTP_401_UNAUTHORIZED)
             
             # Générer un nouveau token d'accès
             access_model_entry.token = uuid.uuid4()
-            access_model_entry.expires_at = now() + timedelta(minutes=30)
+            access_model_entry.expires_at = datetime.now() + timedelta(minutes=30)
             access_model_entry.save()
 
             return Response({"token": str(access_model_entry.token)}, status=status.HTTP_200_OK)
@@ -160,11 +163,9 @@ class GetProfile(APIView):
     def get(self, request):
         """Permet à l'utilisateur de récupérer son profil"""
         try:
-            logger.info(f"GetProfile called by user: {request.user}")
             user = request.user  # Récupère l'instance de User
 
             if not user:
-                logger.warning("User not found in request.")
                 return Response(status=status.HTTP_404_NOT_FOUND)
             
             username = user.username

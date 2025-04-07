@@ -1,26 +1,99 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
+set_environment = 'localhost' # Change this to 'heroku' when deploying to Heroku
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
+
 # Sécurité
-# TODO put in dot env
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-# TODO don't run with debug turned on in production!
-DEBUG = True
+SECRET_KEY = os.getenv('SECRET_KEY')
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-# Domaines autorisés
-# TODO inscrire notre domaine une fois le déploiement sur Heroku
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"] if DEBUG else ["yourdomain.com"]
+# configuration par environnement
+if set_environment == 'localhost':
+    DEBUG = True
 
+    # Domaine du serveur django
+    ALLOWED_HOSTS = [
+        'localhost',
+        '127.0.0.1',
+        #'http://localhost:5173',
+        'http://localhost:8000',
+    ]
+
+    # Origines autorisés à faire des requêtes au backend
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:5173",
+        #"http://localhost:8000",
+    ]
+
+    # Origines de confiance pouvant faire des requêtes Post, put, delete, patch
+    # Domaine du serveur frontend et Domaine du backend qui peut se faire des requêtes à lui-même
+    CSRF_TRUSTED_ORIGINS = [
+        "http://localhost:5173",
+        "http://localhost:8000",
+    ]
+    
+elif set_environment == 'heroku':
+    DEBUG = False
+
+    # Domaine du serveur django
+    ALLOWED_HOSTS = [
+        'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com',
+        #'johny-robit.github.io',
+    ]
+
+    # Origines autorisés à faire des requêtes au backend
+    CORS_ALLOWED_ORIGINS = [
+        "https://johny-robit.github.io",
+        #"https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com"
+    ]
+
+    # Origines de confiance pouvant faire des requêtes Post, put, delete, patch
+    # Domaine du serveur frontend et Domaine du backend qui peut se faire des requêtes à lui-même
+    CSRF_TRUSTED_ORIGINS = [
+        "https://johny-robit.github.io",
+        "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com",
+    ]
+
+
+# CORS Configuration commune (localhost & heroku)
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False  # Désactiver si on veut utiliser CORS_ALLOWED_ORIGINS
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS"
+]
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "x-requested-with",
+    "accept",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+]
+
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_URL = "/static/"
 
 # Applications Django
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,7 +102,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Packages
-    'corsheaders',  # TODO : Supprimer en production
     'rest_framework',
 
     # Application interne
@@ -55,10 +127,11 @@ AUTH_USER_MODEL = "events.CustomUser"  # Modèle d'utilisateur personnalisé
 
 # Middleware
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # TODO : Supprimer en production
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -77,25 +150,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
     }
 }
-
-# CORS Headers pour le développement
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',  # Frontend origin
-    'http://localhost:8000',  # Backend origin
-]
-
-CORS_ALLOW_HEADERS = [
-    'authorization',
-    'content-type',
-    'x-csrftoken',
-    'accept',
-    'origin',
-    'user-agent',
-    'dnt',
-    'cache-control',
-    'x-requested-with',
-]
 
 
 # Paramètrage pour la validation de passwords
@@ -170,6 +224,12 @@ LOGGING = {
             'backupCount': 3,  
             'formatter': 'verbose',
         },
+        #'django_file': {  # DEBUG Nouveau handler pour Django
+        #    'level': 'DEBUG',
+        #    'class': 'logging.FileHandler',
+        #    'filename': os.path.join(LOG_DIR, 'debug.log'),
+        #    'formatter': 'verbose',
+        #},
     },
     'loggers': {
         'eventify': {
@@ -182,8 +242,17 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': False,
         },
+        #'django': {  # DEBUG Nouveau logger pour Django
+        #    'handlers': ['console', 'django_file'],
+        #    'level': 'DEBUG',
+        #    'propagate': True,
+        #},
     },
 }
+
+
+
+
 
 TEMPLATES = [
     {

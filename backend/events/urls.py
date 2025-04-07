@@ -53,3 +53,4 @@ urlpatterns = [
     path("user/all/", GetAllUsers.as_view(), name="all-users"),
     path("event/all/", GetAllEvents.as_view(), name="all-events"),
 ]
+
