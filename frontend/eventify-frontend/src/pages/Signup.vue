@@ -20,7 +20,7 @@
       </div>
       <button type="submit">Signup</button>
     </form>
-    <p>Already have an account? <RouterLink to="/login">Login here</RouterLink></p>
+    <p>Already have an account? <RouterLink to="/AppEq12/login">Login here</RouterLink></p>
   </div>
 </template>
 
@@ -49,7 +49,7 @@ const signup = async () => {
     }
     const response = await signupAPI(userData)
     // Redirect to login page after successful signup
-    router.push('/login')
+    router.push('/AppEq12/login')
   } catch (error) {
     console.error('Signup error:', error)
     alert('Signup failed: ' + error.error)

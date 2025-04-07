@@ -4,8 +4,20 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import AccessToken, Event
 from django.contrib.auth import get_user_model
+import uuid
+from datetime import timedelta
+from django.utils.timezone import now
 
-from .serializers import UserLoginSerializer, UserSignupSerializer, UserProfileSerializer, EventSerializer, GetEventSerializer, AttendeeSerializer, GetAllUsersSerializer
+from .serializers import (
+    UserLoginSerializer, 
+    UserSignupSerializer, 
+    UserProfileSerializer, 
+    EventSerializer, 
+    GetEventSerializer, 
+    AttendeeSerializer, 
+    GetAllUsersSerializer
+)
+
 import logging
 
 User = get_user_model()
@@ -48,14 +60,40 @@ class UserLogin(APIView):
             AccessToken.objects.filter(user=user).delete()
 
             # Générer un nouveau token
-            access_token = AccessToken.objects.create(user=user)
+            access_model_entry = AccessToken.objects.create(
+                user=user,
+                expires_at=now() + timedelta(minutes=30),
+                refresh_expires_at=now() + timedelta(days=7)
+                )
 
             return Response({
-                "token": str(access_token.token)
+                "token": str(access_model_entry.token), 
+                "refresh_token": str(access_model_entry.refresh_token),
             }, status=status.HTTP_200_OK)
         
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    
+class RefreshToken(APIView):
+    def post(self, request):
+        refresh_token = request.data.get("refresh_token")
+        if not refresh_token:
+            return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            access_model_entry = AccessToken.objects.get(refresh_token=refresh_token)
 
+            if access_model_entry.refresh_expires_at < now():
+                return Response({"error": "Refresh token expired, you must log in again."}, status=status.HTTP_401_UNAUTHORIZED)
+            
+            # Générer un nouveau token d'accès
+            access_model_entry.token = uuid.uuid4()
+            access_model_entry.expires_at = now() + timedelta(minutes=30)
+            access_model_entry.save()
+
+            return Response({"token": str(access_model_entry.token)}, status=status.HTTP_200_OK)
+        except AccessToken.DoesNotExist:
+            logger.error(f"RefreshTokenView failed: Invalid refresh token provided.")
+            return Response({"error": "Invalid refresh token"}, status=status.HTTP_401_UNAUTHORIZED)
 
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
@@ -122,9 +160,11 @@ class GetProfile(APIView):
     def get(self, request):
         """Permet à l'utilisateur de récupérer son profil"""
         try:
+            logger.info(f"GetProfile called by user: {request.user}")
             user = request.user  # Récupère l'instance de User
 
             if not user:
+                logger.warning("User not found in request.")
                 return Response(status=status.HTTP_404_NOT_FOUND)
             
             username = user.username
@@ -326,11 +366,10 @@ class CreateEvent(APIView):
                 event = serializer.save(owner=request.user)
                 return Response({"message": "Event created successfully", "event_id": event.event_id}, status=status.HTTP_201_CREATED)
             
-            logger.error(f"CreateEvent validation failed: {serializer.errors}")
-            return Response({"error": "Invalid input data", "details": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "Invalid input data"}, status=status.HTTP_400_BAD_REQUEST)
         
         except Exception as e:
-            logger.error(f"CreateEvent View failed: {e}")
+            logger.error(f"GetProfile View failed: {e}")
             return Response({"error": "Internal server error."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

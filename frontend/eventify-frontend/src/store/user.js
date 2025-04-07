@@ -23,6 +23,7 @@ export const fetchUserProfile = async () => {
   if (isLoggedIn.value && token) {
     try {
       const response = await getProfileInfo(token);
+      console.log(response);
       user.value = response; // Populate the user object with fetched data
     } catch (error) {
       console.error('Failed to fetch profile info:', error);

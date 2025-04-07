@@ -20,11 +20,13 @@ export const signup = async (userData) => {
 
 export const login = async (credentials) => {
   try {
-    const response = await axios.post(`${API_URL}/login/`, credentials);
+    const response = await axios.post(`${API_URL}/login/`, credentials, { withCredentials: true });
     
     // Store the token in a cookie with a duration of 7 days and secure transmission (https) only.
     if (response.status === 200 && response.data.token) {
       Cookies.set('token', response.data.token, { expires: 7, secure: true });
+      // Store the refresh token in a cookie with a duration of 7 days and secure transmission (https) only.
+      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true });
     }
     
     return response.data;
@@ -36,7 +38,8 @@ export const login = async (credentials) => {
 export const logout = async (token) => {
   try {
     const response = await axios.post(`${API_URL}/logout/`, {}, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -47,7 +50,8 @@ export const logout = async (token) => {
 export const editProfile = async (token, profileData) => {
   try {
     const response = await axios.put(`${API_URL}/profile/edit/`, profileData, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -58,7 +62,8 @@ export const editProfile = async (token, profileData) => {
 export const getProfileInfo = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/profile/`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -69,7 +74,8 @@ export const getProfileInfo = async (token) => {
 export const getJoinedEventsList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/joined/`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -80,7 +86,8 @@ export const getJoinedEventsList = async (token) => {
 export const getEventInvitesList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/invitations/`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -91,7 +98,8 @@ export const getEventInvitesList = async (token) => {
 export const getCreatedEventsList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/created/`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {
@@ -102,7 +110,8 @@ export const getCreatedEventsList = async (token) => {
 export const getAllUsers = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/all/`, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
+      withCredentials: true,
     });
     return response.data;
   } catch (error) {

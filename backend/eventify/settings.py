@@ -49,7 +49,9 @@ REST_FRAMEWORK = {
     ],
 }
 
-AUTH_USER_MODEL = "events.CustomUser"
+ACCESS_TOKEN_LIFETIME = 30  # minutes
+REFRESH_TOKEN_LIFETIME = 7  # jours
+AUTH_USER_MODEL = "events.CustomUser"  # Modèle d'utilisateur personnalisé
 
 # Middleware
 MIDDLEWARE = [
@@ -79,8 +81,20 @@ DATABASES = {
 # CORS Headers pour le développement
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-    'http://localhost:8000',
+    'http://localhost:5173',  # Frontend origin
+    'http://localhost:8000',  # Backend origin
+]
+
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+    'x-csrftoken',
+    'accept',
+    'origin',
+    'user-agent',
+    'dnt',
+    'cache-control',
+    'x-requested-with',
 ]
 
 
