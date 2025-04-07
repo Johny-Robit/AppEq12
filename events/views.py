@@ -5,7 +5,10 @@ from rest_framework import status
 from .models import AccessToken, Event
 from django.contrib.auth import get_user_model
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime
+from django.utils import timezone
+from datetime import timedelta
+from django.views.decorators.csrf import csrf_exempt
 
 from .serializers import (
     UserLoginSerializer, 
@@ -61,8 +64,8 @@ class UserLogin(APIView):
             # Générer un nouveau token
             access_model_entry = AccessToken.objects.create(
                 user=user,
-                expires_at=datetime.now() + timedelta(minutes=30),
-                refresh_expires_at=datetime.now() + timedelta(days=7)
+                expires_at=timezone.now() + timedelta(minutes=30),
+                refresh_expires_at=timezone.now() + timedelta(days=7)
                 )
 
             return Response({
@@ -73,8 +76,9 @@ class UserLogin(APIView):
         return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
     
 class RefreshToken(APIView):
+    @csrf_exempt
     def post(self, request):
-        refresh_token = request.data.get("refresh_token")
+        refresh_token = request.COOKIES.get("refresh_token")
         if not refresh_token:
             return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
         
