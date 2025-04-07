@@ -1,3 +1,4 @@
+from datetime import timedelta
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -81,6 +82,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'axes', # Pour la portection contre les attaques par force brute
 
     # Packages
     'rest_framework',
@@ -116,7 +118,18 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'axes.middleware.AxesMiddleware',
 ]
+
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesStandaloneBackend',
+    'django.contrib.auth.backends.ModelBackend', 
+]
+
+# protection contres les attaques par force brute
+AXES_FAILURE_LIMIT = 5  # Nombre maximal de tentatives permises
+AXES_COOLOFF_TIME = timedelta(minutes=1)  # Durée du blocage après l'échec
+AXES_LOCKOUT_PARAMETERS = ['username', 'ip_address']  # Bloquer par utilisateur ET IP
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
