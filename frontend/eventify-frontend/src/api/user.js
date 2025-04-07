@@ -26,7 +26,7 @@ export const login = async (credentials) => {
     if (response.status === 200 && response.data.token) {
       Cookies.set('token', response.data.token, { expires: 7, secure: true });
       // Store the refresh token in a cookie with a duration of 7 days and secure transmission (https) only.
-      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true });
+      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true, httpOnly: true });
     }
     
     return response.data;
@@ -34,6 +34,21 @@ export const login = async (credentials) => {
     throw error.response.data;
   }
 };
+
+export const refreshAccessToken = async () => {
+  try {
+    const response = await axios.post(`${API_URL}/token/refresh/`, {}, { withCredentials: true });
+
+    if (response.status === 200 && response.data.token) {
+      Cookies.set('token', response.data.token, { expires: 7, secure: true });
+      return response.data.token;
+    }
+  } catch (error) {
+    console.error('Error refreshing token:', error);
+    return null;
+    }
+}
+
 
 export const logout = async (token) => {
   try {
