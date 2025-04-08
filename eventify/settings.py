@@ -53,6 +53,7 @@ elif set_environment == 'heroku':
     # Origines de confiance pouvant faire des requêtes Post, put, delete, patch
     # Domaine du serveur frontend et Domaine du backend qui peut se faire des requêtes à lui-même
     CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io').split(',')
+    CSRF_COOKIE_SECURE = True
 
 # CORS Configuration commune (localhost & heroku)
 CORS_ALLOW_CREDENTIALS = True
