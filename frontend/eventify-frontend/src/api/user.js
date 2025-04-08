@@ -3,12 +3,14 @@ import Cookies from 'js-cookie';
 
 const API_URL = 'http://localhost:8000/api/user';
 
+const getCSRFToken = () => Cookies.get('csrftoken');
+
 export const signup = async (userData) => {
   try {
-    const response = await axios.post(`${API_URL}/signup/`, userData);
-    
+    const response = await axios.post(`${API_URL}/signup/`, userData, {
+      headers: { 'X-CSRFToken': getCSRFToken() },
+    });
     return response.data;
-
   } catch (error) {
     if (error.response) {
       throw error.response.data;
@@ -20,13 +22,16 @@ export const signup = async (userData) => {
 
 export const login = async (credentials) => {
   try {
-    const response = await axios.post(`${API_URL}/login/`, credentials, { withCredentials: true });
+    console.log(getCSRFToken());
+    const response = await axios.post(`${API_URL}/login/`, credentials, {
+      headers: { 'X-CSRFToken': getCSRFToken() },
+      withCredentials: true,
+    });
     
-    // Store the token in a cookie with a duration of 7 days and secure transmission (https) only.
     if (response.status === 200 && response.data.token) {
-      Cookies.set('token', response.data.token, { expires: 7, secure: true });
-      // Store the refresh token in a cookie with a duration of 7 days and secure transmission (https) only.
-      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true, httpOnly: true });
+      const expirationTime = 1 / 48; // 30 minutes in days
+      Cookies.set('token', response.data.token, { expires: expirationTime, secure: true });
+      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true });
     }
     
     return response.data;
@@ -35,25 +40,12 @@ export const login = async (credentials) => {
   }
 };
 
-export const refreshAccessToken = async () => {
-  try {
-    const response = await axios.post(`${API_URL}/token/refresh/`, {}, { withCredentials: true });
-
-    if (response.status === 200 && response.data.token) {
-      Cookies.set('token', response.data.token, { expires: 7, secure: true });
-      return response.data.token;
-    }
-  } catch (error) {
-    console.error('Error refreshing token:', error);
-    return null;
-    }
-}
-
-
 export const logout = async (token) => {
   try {
     const response = await axios.post(`${API_URL}/logout/`, {}, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     });
     return response.data;
@@ -65,7 +57,10 @@ export const logout = async (token) => {
 export const editProfile = async (token, profileData) => {
   try {
     const response = await axios.put(`${API_URL}/profile/edit/`, profileData, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+        'X-CSRFToken': getCSRFToken(),
+      },
       withCredentials: true,
     });
     return response.data;
@@ -77,7 +72,9 @@ export const editProfile = async (token, profileData) => {
 export const getProfileInfo = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/profile/`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     });
     return response.data;
@@ -89,7 +86,9 @@ export const getProfileInfo = async (token) => {
 export const getJoinedEventsList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/joined/`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     });
     return response.data;
@@ -101,7 +100,9 @@ export const getJoinedEventsList = async (token) => {
 export const getEventInvitesList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/invitations/`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     });
     return response.data;
@@ -113,7 +114,9 @@ export const getEventInvitesList = async (token) => {
 export const getCreatedEventsList = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/events/created/`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     });
     return response.data;
@@ -125,7 +128,9 @@ export const getCreatedEventsList = async (token) => {
 export const getAllUsers = async (token) => {
   try {
     const response = await axios.get(`${API_URL}/all/`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { 
+        Authorization: `Bearer ${token}`,
+      },
       withCredentials: true,
     });
     return response.data;
