@@ -24,6 +24,8 @@ class AccessToken(models.Model):
 class CustomUser(AbstractUser):
     description = models.TextField(blank=True, null=True)
     profile_image_link = models.URLField(blank=True, null=True)
+    failed_attempt_count = models.IntegerField(default=0)
+    last_failed_attempt = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Utilisateur"

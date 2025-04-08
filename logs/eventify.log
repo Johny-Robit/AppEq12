@@ -17,3 +17,40 @@ ERROR 2025-02-19 17:12:04,717 views CreateEvent View failed: expected string or 
 ERROR 2025-02-19 17:13:30,045 views CreateEvent View failed: expected string or bytes-like object
 ERROR 2025-02-19 17:15:18,969 views CreateEvent validation failed: {'event_image_link': [ErrorDetail(string='This field may not be null.', code='null')]}
 ERROR 2025-02-21 14:00:51,876 views AttendeeList failed: Field name `user_id` is not valid for model `CustomUser` in `events.serializers.AttendeeSerializer`.
+ERROR 2025-04-07 19:44:34,473 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 19:46:04,437 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:02:14,921 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:05:23,611 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:07:50,199 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:10:38,724 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:13:55,752 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:14:57,875 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:18:46,912 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:20:22,058 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:20:54,430 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:21:29,234 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:21:29,238 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:21:49,445 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:21:49,449 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:22:11,908 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:22:11,912 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:22:30,205 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:22:42,203 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:22:51,155 serializers Login Error: Too many failed attempts - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:22:55,964 views UserLogin failed: Too many failed attempts for user.
+ERROR 2025-04-07 20:25:37,922 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:25:57,899 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:33,510 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:33,516 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:42,930 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:42,935 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:45,336 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:45,340 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:47,140 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:47,145 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:49,059 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:49,064 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:51,133 serializers Login Error: Too many failed attempts - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:51,134 views UserLogin failed: Too many failed attempts for user.
+ERROR 2025-04-07 20:33:05,396 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:33:05,399 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}

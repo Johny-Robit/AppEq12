@@ -31,7 +31,6 @@
 - [**GetPendingInvites**](#get-pending-invites-get-authenticated-owner-only) (GET)  
   - // avoir la liste des personnes qui doivent encore confirmer leur présence
 
----
 
 ## User API
 
@@ -65,8 +64,6 @@
   }
   ```
 
----
-
 ### Login (POST) (Public)
 
 **Endpoint:** `/api/user/login/`
@@ -95,8 +92,6 @@
   }
   ```
 
----
-
 ### Logout (POST) (Authenticated)
 
 **Endpoint:** `/api/user/logout/`
@@ -116,8 +111,6 @@ Authorization: Bearer <access_token>
   ```
 
 - **401 Unauthorized** (Si token invalide)
-
----
 
 ### Edit Profile (PUT) (Authenticated)
 
@@ -147,8 +140,6 @@ Authorization: Bearer <access_token>
 
 - **400 Bad Request** (Si problème de validation)
 
----
-
 ### Get Profile Info (GET) (Authenticated)
 
 **Endpoint:** `/api/user/profile/`
@@ -171,7 +162,24 @@ Authorization: Bearer <access_token>
 
 - **404 Not Found** (Si utilisateur non trouvé)
 
----
+### Get All Users (GET) (Authenticated)
+
+**Endpoint:** `/api/user/all/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+```json
+[
+  {
+    "user_id": "integer",
+    "username": "string"
+  }
+]
+```
 
 ### Get All Users (GET) (Authenticated)
 
@@ -215,9 +223,7 @@ Authorization: Bearer <access_token>
 ]
 ```
 
----
-
-### Get Event Invites List (GET) (Authenticated)
+### Get User Invitations  List (GET) (Authenticated)
 
 **Endpoint:** `/api/user/events/invites/`
 
@@ -239,8 +245,6 @@ Authorization: Bearer <access_token>
   }
 ]
 ```
-
----
 
 ### Get Created Events List (GET) (Authenticated)
 
@@ -266,11 +270,7 @@ Authorization: Bearer <access_token>
 ]
 ```
 
----
-
 ## Event API
-
----
 
 ### Join Event (PUT) (Authenticated)
 
@@ -311,8 +311,6 @@ Authorization: Bearer <access_token>
   }
   ```
 
----
-
 ### Leave Event (PUT) (Authenticated)
 
 **Endpoint:** `/api/event/leave/`
@@ -345,8 +343,6 @@ Authorization: Bearer <access_token>
   }
   ```
 
----
-
 ### Invite to Event (PUT) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/invite/`
@@ -364,8 +360,6 @@ Authorization: Bearer <access_token>
 }
 ```
 
----
-
 ### Remove Attendee (PUT) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/remove_attendee/`
@@ -382,8 +376,6 @@ Authorization: Bearer <access_token>
   "user_id": "integer"
 }
 ```
-
----
 
 ### Create Event (POST) (Authenticated)
 
@@ -424,8 +416,6 @@ Authorization: Bearer <access_token>
   }
   ```
 
----
-
 ### Edit Event (PUT) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/edit/`
@@ -448,8 +438,6 @@ Authorization: Bearer <access_token>
 }
 ``` 
 
----
-
 ### Delete Event (DELETE) (Authenticated, Owner Only)
 
 **Endpoint:** `/api/event/delete/`
@@ -466,7 +454,28 @@ Authorization: Bearer <access_token>
 }
 ```
 
----
+### Get All Events (GET) (Public)
+
+**Endpoint:** `/api/event/all/`
+
+- **200 OK**
+
+**Response:**
+
+```json
+[
+  {
+    "event_id": "integer",
+    "ownerID": "integer",
+    "event_name": "string",
+    "event_address": "string",
+    "start_datetime": "string",
+    "end_datetime": "string",
+    "description": "string",
+  }
+]
+```
+
 
 ### Get All Events (GET) (Public)
 
@@ -517,8 +526,6 @@ Authorization: Bearer <access_token>
   }
   ```
 
----
-
 ### Get Attendees List (GET) (Authenticated)
 
 **Endpoint:** `/api/event/{event_id}/attendees/`
@@ -536,8 +543,6 @@ Authorization: Bearer <access_token>
   }
 ]
 ```
-
----
 
 ### Get Pending Invites (GET) (Authenticated, Owner Only)
 
