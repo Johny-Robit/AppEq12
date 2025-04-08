@@ -5,18 +5,17 @@ import dj_database_url
 
 set_environment = 'heroku' # Change this to 'heroku' when deploying to Heroku
 
+# Base directory
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Sécurité
 SECRET_KEY = os.getenv('SECRET_KEY')
-print(f"SECRET_KEY: {SECRET_KEY}")
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # configuration par environnement
 if set_environment == 'localhost':
-    # Base directory
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    load_dotenv(os.path.join(BASE_DIR, ".env"))
 
     DEBUG = True
 
