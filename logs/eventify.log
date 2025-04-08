@@ -33,3 +33,17 @@ ERROR 2025-04-07 20:22:51,155 serializers Login Error: Too many failed attempts 
 ERROR 2025-04-07 20:22:55,964 views UserLogin failed: Too many failed attempts for user.
 ERROR 2025-04-07 20:25:37,922 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
 ERROR 2025-04-07 20:25:57,899 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:33,510 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:33,516 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:42,930 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:42,935 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:45,336 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:45,340 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:47,140 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:47,145 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:49,059 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:49,064 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
+ERROR 2025-04-07 20:30:51,133 serializers Login Error: Too many failed attempts - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:30:51,134 views UserLogin failed: Too many failed attempts for user.
+ERROR 2025-04-07 20:33:05,396 serializers Login Error: Invalid credentials - Email: choucroute1@gmail.com
+ERROR 2025-04-07 20:33:05,399 views UserLogin failed: {'non_field_errors': [ErrorDetail(string='Invalid credentials.', code='invalid')]}
