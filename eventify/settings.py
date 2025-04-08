@@ -5,19 +5,19 @@ import dj_database_url
 
 set_environment = 'heroku' # Change this to 'heroku' when deploying to Heroku
 
-# Base directory
-BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(os.path.join(BASE_DIR, ".env"))
-
-
 
 # Sécurité
 SECRET_KEY = os.getenv('SECRET_KEY')
+print(f"SECRET_KEY: {SECRET_KEY}")
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # configuration par environnement
 if set_environment == 'localhost':
+    # Base directory
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    load_dotenv(os.path.join(BASE_DIR, ".env"))
+
     DEBUG = True
 
     # Domaine du serveur django
@@ -45,13 +45,11 @@ elif set_environment == 'heroku':
     DEBUG = False
 
     # Domaine du serveur django
-    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost').split(',')
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io').split(',')
 
     # Origines autorisés à faire des requêtes au backend
-    CORS_ALLOWED_ORIGINS = [
-        "https://johny-robit.github.io",
-        #"https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com"
-    ]
+    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'https://johny-robit.github.io').split(',')
+
 
     # Origines de confiance pouvant faire des requêtes Post, put, delete, patch
     # Domaine du serveur frontend et Domaine du backend qui peut se faire des requêtes à lui-même
