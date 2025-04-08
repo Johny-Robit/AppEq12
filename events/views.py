@@ -73,7 +73,17 @@ class UserLogin(APIView):
                 "refresh_token": str(access_model_entry.refresh_token),
             }, status=status.HTTP_200_OK)
         
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        # If not valid
+        error_messages = serializer.errors.get('non_field_errors', [])  # On récupère les erreurs générales
+
+        if any("Too many failed attempts." in str(message) for message in error_messages):
+            logger.error(f"UserLogin failed: Too many failed attempts for user.")
+            return Response({"error": "Your account is temporarily locked due to too many failed attempts. Please try again later."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
+        
+        else:
+            logger.error(f"UserLogin failed: {serializer.errors}")
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    
     
 class RefreshToken(APIView):
     @csrf_exempt
