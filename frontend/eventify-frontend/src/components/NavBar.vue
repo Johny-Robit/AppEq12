@@ -33,7 +33,7 @@ const route = useRoute()
 const router = useRouter()
 const isAuthPage = route.path === '/AppEq12/login' || route.path === '/AppEq12/signup'
 const dropdownVisible = ref(false)
-const username = computed(() => localStorage.getItem('username') || '')
+const username = computed(() => user.value.username || ''); // Use the username from the user object
 
 const toggleDropdown = () => {
   dropdownVisible.value = !dropdownVisible.value

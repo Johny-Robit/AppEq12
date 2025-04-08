@@ -99,11 +99,11 @@ const username = computed(() => localStorage.getItem('username') || '')
 
 const getUsername = (userId) => {
   if (userId === user.value.user_id) {
-    return username.value; // Get username from computed property
+    return user.value.username; // Use the username from the user object
   }
-  const foundUser = users.value.find(user => user.user_id === userId)
-  return foundUser ? foundUser.username : 'Unknown'
-}
+  const foundUser = users.value.find(user => user.user_id === userId);
+  return foundUser ? foundUser.username : 'Unknown';
+};
 
 const initializeEvents = async (events) => {
   for (const event of events) {

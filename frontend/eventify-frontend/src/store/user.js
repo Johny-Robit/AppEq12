@@ -13,7 +13,6 @@ export const getToken = () => {
 // fonction pour supprimer le token
 export const removeToken = () => {
   Cookies.remove('token');
-  localStorage.removeItem('username');
   isLoggedIn.value = false;
 };
 
@@ -23,11 +22,12 @@ export const fetchUserProfile = async () => {
 
   if (isLoggedIn.value && token) {
     try {
-      const response = await getProfileInfo(token)
-      user.value = response
+      const response = await getProfileInfo(token);
+      console.log(response);
+      user.value = response; // Populate the user object with fetched data
     } catch (error) {
-      console.error('Failed to fetch profile info:', error)
-      alert('Failed to fetch profile info')
+      console.error('Failed to fetch profile info:', error);
+      alert('Failed to fetch profile info');
     }
   }
-}
+};
