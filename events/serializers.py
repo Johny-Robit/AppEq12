@@ -52,7 +52,6 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid credentials.")
 
         # Vérifie si l'utilisateur a déjà 5 tentatives échouées avant de tenter l'authentification
-        # TODO CHANGE FOR 10 MINUTES
         if existing_user.failed_attempt_count >= 5 and existing_user.last_failed_attempt >= timezone.now() - timedelta(minutes=15):
             logger.error(f"Login Error: Too many failed attempts - Email: {email}")
             raise serializers.ValidationError("Too many failed attempts.")
@@ -66,7 +65,6 @@ class UserLoginSerializer(serializers.Serializer):
             existing_user.failed_attempt_count += 1
 
             # Si la dernière tentative échouée date de plus de 5 minutes, on remet le compteur à 1
-            # TODO CHANGE FOR 10 MINUTES
             my_value = existing_user.last_failed_attempt
             if my_value is None:
                 existing_user.failed_attempt_count = 1

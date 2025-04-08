@@ -31,20 +31,25 @@ class UserSignup(APIView):
 
     def post(self, request):
         """Creates a new user"""
+        logger.info(f"UserSignup View: {request.data}")
         serializer = UserSignupSerializer(data=request.data)
 
         if serializer.is_valid():
             user = serializer.save()
+            logger.info(f"User created: {user.username}")
             return Response({"success": "User created successfully", "userid": user.id}, status=status.HTTP_201_CREATED)
 
         error_messages = serializer.errors
 
         if "username" in error_messages or "email" in error_messages:
+            logger.error(f"UserSignup failed: {error_messages}")
             return Response({"error": "Email or username already taken"}, status=status.HTTP_400_BAD_REQUEST)
 
         if "password" in error_messages:
+            logger.error(f"UserSignup failed: {error_messages}")
             return Response({"error": "Invalid password format"}, status=status.HTTP_400_BAD_REQUEST)
 
+        
         return Response({"error": "Bad request."}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -53,6 +58,7 @@ class UserLogin(APIView):
 
     def post(self, request):
         """Authentifie l'utilisateur et crée une session."""
+        logger.info(f"UserLogin View: {request.data}")
         serializer = UserLoginSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -68,6 +74,7 @@ class UserLogin(APIView):
                 refresh_expires_at=timezone.now() + timedelta(days=7)
                 )
 
+            logger.info(f"UserLogin successful: {user.username}")
             return Response({
                 "token": str(access_model_entry.token), 
                 "refresh_token": str(access_model_entry.refresh_token),
@@ -88,6 +95,7 @@ class UserLogin(APIView):
 class RefreshToken(APIView):
     @csrf_exempt
     def post(self, request):
+        logger.info(f"RefreshToken View: {request.data}")
         refresh_token = request.COOKIES.get("refresh_token")
         if not refresh_token:
             return Response({"error": "Refresh token is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -96,6 +104,7 @@ class RefreshToken(APIView):
             access_model_entry = AccessToken.objects.get(refresh_token=refresh_token)
 
             if access_model_entry.refresh_expires_at < datetime.now():
+                logger.error(f"RefreshTokenView failed: Refresh token expired.")
                 return Response({"error": "Refresh token expired, you must log in again."}, status=status.HTTP_401_UNAUTHORIZED)
             
             # Générer un nouveau token d'accès
@@ -103,6 +112,7 @@ class RefreshToken(APIView):
             access_model_entry.expires_at = datetime.now() + timedelta(minutes=30)
             access_model_entry.save()
 
+            logger.info(f"RefreshToken successful: {access_model_entry}")
             return Response({"token": str(access_model_entry.token)}, status=status.HTTP_200_OK)
         except AccessToken.DoesNotExist:
             logger.error(f"RefreshTokenView failed: Invalid refresh token provided.")
@@ -112,6 +122,7 @@ class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        logger.info(f"UserLogout View: {request.data}")
         """ Déconnecte l'utilisateur en blacklistant le refresh token. """
         try: 
             token = request.headers.get("Authorization")
@@ -137,6 +148,7 @@ class EditProfile(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
+        logger.info(f"EditProfile View: {request.data}")
         """Permet à l'utilisateur d'éditer son profil"""
         try:
             user = request.user # Récupère l'instance de User
@@ -157,6 +169,7 @@ class GetAllUsers(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        logger.info(f"GetAllUsers View: {request.data}")
         """Permet à l'utilisateur de récupérer la liste de tous les utilisateurs"""
         try:
             users = User.objects.all()
@@ -171,6 +184,7 @@ class GetProfile(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        logger.info(f"GetProfile View: {request.data}")
         """Permet à l'utilisateur de récupérer son profil"""
         try:
             user = request.user  # Récupère l'instance de User
@@ -200,6 +214,7 @@ class GetJoinedEventsList(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        logger.info(f"GetJoinedEventsList View: {request.data}")
         try:
             joined_events = Event.objects.filter(attendees=request.user)
 
@@ -214,6 +229,7 @@ class GetUserInvitations(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        logger.info(f"GetUserInvitations View: {request.data}")
         try:
             pending_invites = Event.objects.filter(pending_invites=request.user)
 
@@ -228,6 +244,7 @@ class GetCreatedEventsList(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        logger.info(f"GetCreatedEventsList View: {request.data}")
         try:
             created_events = Event.objects.filter(owner=request.user)
 
@@ -242,6 +259,7 @@ class JoinEvent(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
+        logger.info(f"JoinEvent View: {request.data}")
         try:
             event_id = request.data.get("event_id")
             user = request.user
@@ -273,6 +291,7 @@ class LeaveEvent(APIView):
 
 
     def put(self, request):
+        logger.info(f"LeaveEvent View: {request.data}")
         try:
             event_id = request.data.get("event_id")
             user = request.user
@@ -298,6 +317,7 @@ class InviteToEvent(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
+        logger.info(f"InviteToEvent View: {request.data}")
         try:
             event_id = request.data.get("event_id")
             user_id = request.data.get("user_id")
@@ -332,6 +352,7 @@ class RemoveAttendee(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
+        logger.info(f"RemoveAttendee View: {request.data}")
         try:
             event_id = request.data.get("event_id")
             user_id = request.data.get("user_id")
@@ -371,6 +392,7 @@ class CreateEvent(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        logger.info(f"CreateEvent View: {request.data}")
         try:
             serializer = EventSerializer(data=request.data)
             if serializer.is_valid():
@@ -388,6 +410,7 @@ class EditEvent(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request):
+        logger.info(f"EditEvent View: {request.data}")
         try:
             event_id = request.data.get("event_id")
             event = Event.objects.filter(event_id=event_id, owner=request.user).first()
@@ -411,6 +434,7 @@ class DeleteEvent(APIView):
     permission_classes = [IsAuthenticated]
 
     def delete(self, request):
+        logger.info(f"DeleteEvent View: {request.data}")
         try:
             event_id = request.data.get("event_id")
             if not event_id:
@@ -434,6 +458,7 @@ class GetAllEvents(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
+        logger.info(f"GetAllEvents View: {request.data}")
         try:
             events = Event.objects.filter(event_is_public=True)
             serializer = GetEventSerializer(events, many=True)
@@ -447,6 +472,7 @@ class GetEventView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request, event_id):
+        logger.info(f"GetEventView: {request.data}")
         try:
             event = Event.objects.filter(event_id=event_id).first()
             if not event:
@@ -463,6 +489,7 @@ class GetAttendeeList(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, event_id):
+        logger.info(f"GetAttendeeList View: {request.data}")
         try:
             event = Event.objects.filter(event_id=event_id).first()
             if not event:
@@ -480,6 +507,7 @@ class GetPendingInvites(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, event_id):
+        logger.info(f"GetPendingInvites View: {request.data}")
         try:
             event = Event.objects.filter(event_id=event_id).first()
             if not event:
