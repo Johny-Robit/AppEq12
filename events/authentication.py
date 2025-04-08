@@ -1,6 +1,7 @@
 from rest_framework.authentication import BaseAuthentication
 from .models import AccessToken
 from datetime import datetime
+from django.utils import timezone
 
 class TokenAuthentication(BaseAuthentication):
     def authenticate(self, request):
@@ -13,7 +14,7 @@ class TokenAuthentication(BaseAuthentication):
         try:
             access_token = AccessToken.objects.get(token=token)
 
-            if access_token.expires_at < datetime.now():
+            if access_token.expires_at < timezone.now():
                 return None # Token expiré
 
             return (access_token.user, None)

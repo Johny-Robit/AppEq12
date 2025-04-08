@@ -1,14 +1,17 @@
+from datetime import timedelta
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import ValidationError 
-from .models import Event
+from .models import Event, AccessToken
 import logging
+from django.utils import timezone
 import re
 
 User = get_user_model()
 
 logger = logging.getLogger("eventify")
+
 
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
@@ -40,16 +43,43 @@ class UserLoginSerializer(serializers.Serializer):
         """Vérifie que l'utilisateur existe et que les identifiants sont corrects"""
         email = data["email"]
         password = data["password"]
+        
+        try:
+            existing_user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            logger.error(f"Login Error: User not found - Email: {email}")
+            # Incrémente le compteur d'échecs
+            raise serializers.ValidationError("Invalid credentials.")
 
-        user_model = User.objects.get(email=email)
+        # Vérifie si l'utilisateur a déjà 5 tentatives échouées avant de tenter l'authentification
+        if existing_user.failed_attempt_count >= 5 and existing_user.last_failed_attempt >= timezone.now() - timedelta(minutes=15):
+            logger.error(f"Login Error: Too many failed attempts - Email: {email}")
+            raise serializers.ValidationError("Too many failed attempts.")
 
-        user = authenticate(username=user_model.username, password=password)
+        authentication_success = authenticate(username=existing_user.username, password=password)
 
-        if not user:
+        if not authentication_success:
+            logger.error(f"Login Error: Invalid credentials - Email: {email}")
+            # Incrémente le compteur d'échecs
+
+            existing_user.failed_attempt_count += 1
+
+            # Si la dernière tentative échouée date de plus de 5 minutes, on remet le compteur à 1
+            my_value = existing_user.last_failed_attempt
+            if my_value is None:
+                existing_user.failed_attempt_count = 1
+                existing_user.last_failed_attempt = timezone.now()
+            elif (timezone.now() - existing_user.last_failed_attempt) > timedelta(minutes=15):
+                existing_user.failed_attempt_count = 1
+            
+            # Met à jour la date de la dernière tentative échouée
+            existing_user.last_failed_attempt = timezone.now()
+            existing_user.save()
+
             raise serializers.ValidationError("Invalid credentials.")
 
         # Ajout de l'utilisateur validé
-        data["user"] = user
+        data["user"] = authentication_success
         return data
 
 class UserProfileSerializer(serializers.ModelSerializer):

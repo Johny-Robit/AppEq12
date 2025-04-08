@@ -181,6 +181,25 @@ Authorization: Bearer <access_token>
 ]
 ```
 
+### Get All Users (GET) (Authenticated)
+
+**Endpoint:** `/api/user/all/`
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+```
+
+**Response:**
+```json
+[
+  {
+    "user_id": "integer",
+    "username": "string"
+  }
+]
+```
+
 ### Get Joined Events List (GET) (Authenticated)
 
 **Endpoint:** `/api/user/events/joined/`
@@ -434,6 +453,29 @@ Authorization: Bearer <access_token>
   "event_id": "integer"
 }
 ```
+
+### Get All Events (GET) (Public)
+
+**Endpoint:** `/api/event/all/`
+
+- **200 OK**
+
+**Response:**
+
+```json
+[
+  {
+    "event_id": "integer",
+    "ownerID": "integer",
+    "event_name": "string",
+    "event_address": "string",
+    "start_datetime": "string",
+    "end_datetime": "string",
+    "description": "string",
+  }
+]
+```
+
 
 ### Get All Events (GET) (Public)
 
