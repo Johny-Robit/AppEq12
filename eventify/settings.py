@@ -41,7 +41,7 @@ if set_environment == 'localhost':
     ]
     
 elif set_environment == 'heroku':
-    DEBUG = True
+    DEBUG = False
 
     # Domaine du serveur django
     ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io').split(',')
