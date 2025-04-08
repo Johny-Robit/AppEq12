@@ -1,8 +1,9 @@
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const API_URL = 'http://localhost:8000/api/event';
 
-
+const getCSRFToken = () => Cookies.get('csrftoken');
 
 export const joinEvent = async (token, eventId) => {
   try {
@@ -50,9 +51,13 @@ export const removeAttendee = async (token, eventId, userId) => {
 
 export const createEvent = async (token, eventData) => {
   try {
+    console.log(eventData);
     const response = await axios.post(`${API_URL}/create/`, eventData, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}`,
+      'X-CSRFToken': getCSRFToken(),
+    }
     });
+    console.log(response.data);
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -62,7 +67,9 @@ export const createEvent = async (token, eventData) => {
 export const editEvent = async (token, eventData) => {
   try {
     const response = await axios.put(`${API_URL}/edit/`, eventData, {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}`,
+      'X-CSRFToken': getCSRFToken(),
+    }
     });
     return response.data;
   } catch (error) {
