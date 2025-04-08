@@ -22,7 +22,6 @@ export const signup = async (userData) => {
 
 export const login = async (credentials) => {
   try {
-    console.log(getCSRFToken());
     const response = await axios.post(`${API_URL}/login/`, credentials, {
       headers: { 'X-CSRFToken': getCSRFToken() },
       withCredentials: true,
@@ -30,8 +29,8 @@ export const login = async (credentials) => {
     
     if (response.status === 200 && response.data.token) {
       const expirationTime = 1 / 48; // 30 minutes in days
-      Cookies.set('token', response.data.token, { expires: expirationTime, secure: true });
-      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true });
+      Cookies.set('token', response.data.token, { expires: expirationTime, secure: true, httpOnly: true });
+      Cookies.set('refresh_token', response.data.refresh_token, { expires: 7, secure: true, httpOnly: true });
     }
     
     return response.data;
