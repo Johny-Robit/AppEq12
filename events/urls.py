@@ -1,4 +1,6 @@
 from django.urls import path
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 
 from .views import (
     # User-related views
@@ -29,6 +31,9 @@ from .views import (
     InviteToEvent,
 )
 
+def set_csrf_token(request):
+    return JsonResponse({"message": "CSRF cookie set"})
+
 urlpatterns = [
     # Endpoints User
     path("user/signup/", UserSignup.as_view(), name="signup"),
@@ -52,5 +57,6 @@ urlpatterns = [
     path("user/events/created/", GetCreatedEventsList.as_view(), name="created-events"),
     path("user/all/", GetAllUsers.as_view(), name="all-users"),
     path("event/all/", GetAllEvents.as_view(), name="all-events"),
+    path("csrf/", ensure_csrf_cookie(set_csrf_token), name="set-csrf-token"),
 ]
 

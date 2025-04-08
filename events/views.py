@@ -8,7 +8,8 @@ import uuid
 from datetime import datetime
 from django.utils import timezone
 from datetime import timedelta
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie, csrf_protect
+from django.utils.decorators import method_decorator
 
 from .serializers import (
     UserLoginSerializer, 
@@ -29,6 +30,7 @@ logger = logging.getLogger("eventify")
 class UserSignup(APIView):
     permission_classes = [AllowAny]
 
+    @csrf_exempt
     def post(self, request):
         """Creates a new user"""
         logger.info(f"UserSignup View: {request.data}")
@@ -56,6 +58,7 @@ class UserSignup(APIView):
 class UserLogin(APIView):
     permission_classes = [AllowAny]
 
+    @method_decorator(ensure_csrf_cookie)
     def post(self, request):
         """Authentifie l'utilisateur et crée une session."""
         logger.info(f"UserLogin View: {request.data}")
@@ -79,7 +82,7 @@ class UserLogin(APIView):
                 "token": str(access_model_entry.token), 
                 "refresh_token": str(access_model_entry.refresh_token),
             }, status=status.HTTP_200_OK)
-        
+    
         # If not valid
         error_messages = serializer.errors.get('non_field_errors', [])  # On récupère les erreurs générales
 
@@ -90,8 +93,8 @@ class UserLogin(APIView):
         else:
             logger.error(f"UserLogin failed: {serializer.errors}")
             return Response({"error": "Invalid credentials"}, status=status.HTTP_400_BAD_REQUEST)
-    
-    
+
+
 class RefreshToken(APIView):
     @csrf_exempt
     def post(self, request):
@@ -121,6 +124,7 @@ class RefreshToken(APIView):
 class UserLogout(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def post(self, request):
         logger.info(f"UserLogout View: {request.data}")
         """ Déconnecte l'utilisateur en blacklistant le refresh token. """
@@ -147,6 +151,7 @@ class UserLogout(APIView):
 class EditProfile(APIView):
     permission_classes = [IsAuthenticated]
 
+    @method_decorator(csrf_protect)
     def put(self, request):
         logger.info(f"EditProfile View: {request.data}")
         """Permet à l'utilisateur d'éditer son profil"""
@@ -168,6 +173,7 @@ class EditProfile(APIView):
 class GetAllUsers(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request):
         logger.info(f"GetAllUsers View: {request.data}")
         """Permet à l'utilisateur de récupérer la liste de tous les utilisateurs"""
@@ -183,6 +189,7 @@ class GetAllUsers(APIView):
 class GetProfile(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request):
         logger.info(f"GetProfile View: {request.data}")
         """Permet à l'utilisateur de récupérer son profil"""
@@ -213,6 +220,7 @@ class GetProfile(APIView):
 class GetJoinedEventsList(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request):
         logger.info(f"GetJoinedEventsList View: {request.data}")
         try:
@@ -228,6 +236,7 @@ class GetJoinedEventsList(APIView):
 class GetUserInvitations(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request):
         logger.info(f"GetUserInvitations View: {request.data}")
         try:
@@ -243,6 +252,7 @@ class GetUserInvitations(APIView):
 class GetCreatedEventsList(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request):
         logger.info(f"GetCreatedEventsList View: {request.data}")
         try:
@@ -258,6 +268,7 @@ class GetCreatedEventsList(APIView):
 class JoinEvent(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def put(self, request):
         logger.info(f"JoinEvent View: {request.data}")
         try:
@@ -289,7 +300,7 @@ class JoinEvent(APIView):
 class LeaveEvent(APIView):
     permission_classes = [IsAuthenticated]
 
-
+    @csrf_exempt
     def put(self, request):
         logger.info(f"LeaveEvent View: {request.data}")
         try:
@@ -316,6 +327,7 @@ class LeaveEvent(APIView):
 class InviteToEvent(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def put(self, request):
         logger.info(f"InviteToEvent View: {request.data}")
         try:
@@ -351,6 +363,7 @@ class InviteToEvent(APIView):
 class RemoveAttendee(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def put(self, request):
         logger.info(f"RemoveAttendee View: {request.data}")
         try:
@@ -390,11 +403,14 @@ class RemoveAttendee(APIView):
 
 class CreateEvent(APIView):
     permission_classes = [IsAuthenticated]
-
+    
+    @method_decorator(csrf_protect)
     def post(self, request):
         logger.info(f"CreateEvent View: {request.data}")
         try:
+            print(request.data)
             serializer = EventSerializer(data=request.data)
+            logger.info(f"CreateEvent View: {request.data}")
             if serializer.is_valid():
                 event = serializer.save(owner=request.user)
                 return Response({"message": "Event created successfully", "event_id": event.event_id}, status=status.HTTP_201_CREATED)
@@ -409,6 +425,7 @@ class CreateEvent(APIView):
 class EditEvent(APIView):
     permission_classes = [IsAuthenticated]
 
+    @method_decorator(csrf_protect)
     def put(self, request):
         logger.info(f"EditEvent View: {request.data}")
         try:
@@ -433,6 +450,7 @@ class EditEvent(APIView):
 class DeleteEvent(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def delete(self, request):
         logger.info(f"DeleteEvent View: {request.data}")
         try:
@@ -457,6 +475,7 @@ class DeleteEvent(APIView):
 class GetAllEvents(APIView):
     permission_classes = [AllowAny]
 
+    @csrf_exempt
     def get(self, request):
         logger.info(f"GetAllEvents View: {request.data}")
         try:
@@ -471,6 +490,7 @@ class GetAllEvents(APIView):
 class GetEventView(APIView):
     permission_classes = [AllowAny]
 
+    @csrf_exempt
     def get(self, request, event_id):
         logger.info(f"GetEventView: {request.data}")
         try:
@@ -488,6 +508,7 @@ class GetEventView(APIView):
 class GetAttendeeList(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request, event_id):
         logger.info(f"GetAttendeeList View: {request.data}")
         try:
@@ -506,6 +527,7 @@ class GetAttendeeList(APIView):
 class GetPendingInvites(APIView):
     permission_classes = [IsAuthenticated]
 
+    @csrf_exempt
     def get(self, request, event_id):
         logger.info(f"GetPendingInvites View: {request.data}")
         try:
