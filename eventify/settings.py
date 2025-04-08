@@ -3,9 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
-set_environment = 'localhost' # Change this to 'heroku' when deploying to Heroku
-
-set_environment = 'localhost' # Change this to 'heroku' when deploying to Heroku
+set_environment = 'heroku' # Change this to 'heroku' when deploying to Heroku
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,10 +45,7 @@ elif set_environment == 'heroku':
     DEBUG = False
 
     # Domaine du serveur django
-    ALLOWED_HOSTS = [
-        'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com',
-        #'johny-robit.github.io',
-    ]
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'app-eq-12-eventify-29bf10cbb7c2.herokuapp.com,johny-robit.github.io,localhost').split(',')
 
     # Origines autorisés à faire des requêtes au backend
     CORS_ALLOWED_ORIGINS = [
@@ -60,11 +55,7 @@ elif set_environment == 'heroku':
 
     # Origines de confiance pouvant faire des requêtes Post, put, delete, patch
     # Domaine du serveur frontend et Domaine du backend qui peut se faire des requêtes à lui-même
-    CSRF_TRUSTED_ORIGINS = [
-        "https://johny-robit.github.io",
-        "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com",
-    ]
-
+    CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://app-eq-12-eventify-29fb10cbb7c2.herokuapp.com,https://johny-robit.github.io').split(',')
 
 # CORS Configuration commune (localhost & heroku)
 CORS_ALLOW_CREDENTIALS = True
@@ -89,40 +80,9 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
 ]
 
-# Origines de confiance pouvant faire des requêtes Post, put, delete, patch
-# Domaine du serveur frontend et Domaine du backend qui peut se faire des requêtes à lui-même
-CSRF_TRUSTED_ORIGINS = [
-    "https://johny-robit.github.io",
-    "https://app-eq-12-eventify-29bf10cbb7c2.herokuapp.com",
-]
-
-
 # CORS Configuration commune (localhost & heroku)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = False  # Désactiver si on veut utiliser CORS_ALLOWED_ORIGINS
-
-CORS_ALLOW_METHODS = [
-    "GET",
-    "POST",
-    "PUT",
-    "PATCH",
-    "DELETE",
-    "OPTIONS"
-]
-
-CORS_ALLOW_HEADERS = [
-    "authorization",
-    "content-type",
-    "x-requested-with",
-    "accept",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-]
-
-
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATIC_URL = "/static/"
@@ -177,14 +137,7 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-    }
+    'default': dj_database_url.config(env='JAWSDB_URL', default='sqlite:///db.sqlite3')
 }
 
 
